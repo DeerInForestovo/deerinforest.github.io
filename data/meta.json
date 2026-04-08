@@ -1,0 +1,30 @@
+{
+  "site": {
+    "title": "Swallow",
+    "siteUrl": "https://yuzhou.github.io/swallow",
+    "description": "Blog template，github action generated blog，no need konw anything about js",
+    "githubRepo": "yuzhouu/swallow",
+    "footerLinks": [
+      {
+        "name": "github",
+        "link": "https://github.com/yuzhouu/swallow"
+      },
+      {
+        "name": "rss",
+        "link": "/rss.xml"
+      }
+    ],
+    "enableComment": true
+  },
+  "author": {
+    "name": "YuZhou",
+    "link": "https://github.com/yuzhouu"
+  },
+  "pathPrefix": "swallow",
+  "docs": {
+    "hey": "你好呀! 我是 Yuzhou",
+    "title": "一个不知名星空摄影师，developer",
+    "about": "Welcome! It's great to have you here. I'm curious about the things under the nut, and I write some thing about javascript and golang.",
+    "blogSlogan": "细雨鱼儿出，微风燕子斜"
+  }
+}
