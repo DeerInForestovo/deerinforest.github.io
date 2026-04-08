@@ -32,10 +32,12 @@ export default BlogIndex;
 
 export const pageQuery = graphql`
   query {
-    allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
+    allMdx(sort: { frontmatter: { date: DESC } }) {
       nodes {
         excerpt
-        slug
+        fields {
+          slug
+        }
         frontmatter {
           date(formatString: "MMMM DD, YYYY")
           title

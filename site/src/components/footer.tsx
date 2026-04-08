@@ -1,6 +1,6 @@
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from '@emotion/styled';
-import { IconBrandGithub, IconRss, IconHeart } from '@tabler/icons';
+import { IconBrandGithub, IconRss, IconHeart } from '@tabler/icons-react';
 
 const StyledFooter = styled.footer`
   display: flex;

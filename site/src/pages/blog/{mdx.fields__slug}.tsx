@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { graphql } from 'gatsby';
-import { MDXRenderer } from 'gatsby-plugin-mdx';
 import styled from '@emotion/styled';
 
 import PostLayout from '../../components/post/post-layout';
@@ -55,7 +54,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const BlogPostTemplate = ({ data }) => {
+const BlogPostTemplate = ({ data, children }) => {
   const post = data.mdx;
 
   return (
@@ -69,7 +68,7 @@ const BlogPostTemplate = ({ data }) => {
             <PostTags className="post-tags" tags={post.frontmatter.tags} />
           </header>
           <MDXProvider>
-            <MDXRenderer itemProp="articleBody">{post.body}</MDXRenderer>
+            <div itemProp="articleBody">{children}</div>
           </MDXProvider>
 
           <PostNav postNav={post.postNav} />
@@ -92,7 +91,6 @@ export const pageQuery = graphql`
     mdx(id: { eq: $id }) {
       id
       excerpt(pruneLength: 160)
-      body
       frontmatter {
         title
         date(formatString: "MMMM DD, YYYY")
@@ -100,13 +98,17 @@ export const pageQuery = graphql`
       }
       postNav {
         newer {
-          slug
+          fields {
+            slug
+          }
           frontmatter {
             title
           }
         }
         older {
-          slug
+          fields {
+            slug
+          }
           frontmatter {
             title
           }

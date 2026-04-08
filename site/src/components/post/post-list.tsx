@@ -5,7 +5,9 @@ import PostTags from './post-tags';
 interface Props {
   posts: Array<{
     excerpt: string;
-    slug: string;
+    fields: {
+      slug: string;
+    };
     frontmatter: {
       date: string;
       title: string;
@@ -85,15 +87,15 @@ const PostList = ({ posts }: Props) => {
       <div className="bg"></div>
       <ol>
         {posts.map(post => {
-          const title = post.frontmatter.title || post.slug;
+          const title = post.frontmatter.title || post.fields.slug;
 
           return (
-            <li key={post.slug}>
+            <li key={post.fields.slug}>
               <Post className="post-list-item" itemScope itemType="http://schema.org/Article">
                 <header>
                   <small>{post.frontmatter.date}</small>
                   <h2>
-                    <Link to={`/blog/${post.slug}`} itemProp="url">
+                    <Link to={`/blog/${post.fields.slug}`} itemProp="url">
                       <span itemProp="headline">{title}</span>
                     </Link>
                   </h2>

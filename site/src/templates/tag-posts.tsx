@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { graphql, Link, PageProps } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 
-import Layout from '../../../components/layout';
-import Seo from '../../../components/seo';
-import PostList from '../../../components/post/post-list';
+import Layout from '../components/layout';
+import Seo from '../components/seo';
+import PostList from '../components/post/post-list';
 
-const BlogIndex = ({ data, params }: PageProps & { data: any }) => {
+const TagPosts = ({ data, pageContext }) => {
   const posts = data.allMdx.nodes;
-  const curTag = params.name;
+  const curTag = pageContext.tag;
 
   if (posts.length === 0) {
     return (
@@ -33,17 +33,19 @@ const BlogIndex = ({ data, params }: PageProps & { data: any }) => {
   );
 };
 
-export default BlogIndex;
+export default TagPosts;
 
 export const pageQuery = graphql`
-  query PostsByTag($id: String!) {
+  query PostsByTag($tag: String!) {
     allMdx(
-      filter: { frontmatter: { tags: { eq: $id } } }
-      sort: { fields: [frontmatter___date], order: DESC }
+      filter: { frontmatter: { tags: { eq: $tag } } }
+      sort: { frontmatter: { date: DESC } }
     ) {
       nodes {
         excerpt
-        slug
+        fields {
+          slug
+        }
         frontmatter {
           date(formatString: "MMMM DD, YYYY")
           title

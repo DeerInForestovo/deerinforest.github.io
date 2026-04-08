@@ -70,19 +70,21 @@ const plugins = [
                 title: node.frontmatter.title + ' | ' + site.siteMetadata.title,
                 description: node.excerpt,
                 date: node.frontmatter.date,
-                url: site.siteMetadata.siteUrl + '/blog/' + node.slug,
-                guid: site.siteMetadata.siteUrl + '/blog/' + node.slug,
+                url: site.siteMetadata.siteUrl + '/blog/' + node.fields.slug,
+                guid: site.siteMetadata.siteUrl + '/blog/' + node.fields.slug,
               });
             });
           },
           query: `
             {
               allMdx(
-                sort: { order: DESC, fields: [frontmatter___date] },
+                sort: { frontmatter: { date: DESC } }
               ) {
                 nodes {
                   excerpt
-                  slug
+                  fields {
+                    slug
+                  }
                   frontmatter {
                     title
                     date
@@ -92,6 +94,7 @@ const plugins = [
             }
           `,
           output: '/rss.xml',
+          title: meta.site.title,
           match: '^/blog/?$',
         },
       ],

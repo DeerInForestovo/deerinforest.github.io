@@ -41,7 +41,9 @@ const PostTitle = styled.div`
 `;
 
 type NavType = {
-  slug: string;
+  fields: {
+    slug: string;
+  };
   frontmatter: {
     title: string;
   };
@@ -59,7 +61,7 @@ const PostNav = ({ postNav }: PostNavProps) => {
     <Nav>
       <li>
         {postNav.newer && (
-          <Link to={'/blog/' + postNav.newer.slug} rel="prev">
+          <Link to={'/blog/' + postNav.newer.fields.slug} rel="prev">
             <div>上一篇</div>
             <PostTitle>« {postNav.newer.frontmatter.title}</PostTitle>
           </Link>
@@ -67,7 +69,7 @@ const PostNav = ({ postNav }: PostNavProps) => {
       </li>
       <li>
         {postNav.older && (
-          <Link to={'/blog/' + postNav.older.slug} rel="next">
+          <Link to={'/blog/' + postNav.older.fields.slug} rel="next">
             <div>下一篇</div>
             <PostTitle>{postNav.older.frontmatter.title} »</PostTitle>
           </Link>

@@ -33,6 +33,19 @@
 
 // exports.sourceNodes = sourceNodes;
 
+const path = require('path');
+const { createFilePath } = require('gatsby-source-filesystem');
+
+const onCreateNode = ({ node, actions, getNode }) => {
+  const { createNodeField } = actions;
+  if (node.internal.type === 'Mdx') {
+    const slug = createFilePath({ node, getNode }).replace(/^\/|\/$/g, '');
+    createNodeField({ name: 'slug', node, value: slug });
+  }
+};
+
+exports.onCreateNode = onCreateNode;
+
 const createSchemaCustomization = ({ actions, schema }) => {
   const { createTypes } = actions;
 
@@ -61,8 +74,9 @@ const createResolvers = ({ createResolvers, createNode }) => {
     Mdx: {
       postNav: {
         type: `PostNav`,
-        resolve: (source, args, context, info) => {
-          const postList = context.nodeModel.getAllNodes({ type: `Mdx` }).sort((a, b) => {
+        resolve: async (source, args, context, info) => {
+          const { entries } = await context.nodeModel.findAll({ type: `Mdx` });
+          const postList = Array.from(entries).sort((a, b) => {
             return new Date(b.frontmatter.date).valueOf() - new Date(a.frontmatter.date).valueOf();
           });
           let index = 0;
@@ -85,10 +99,10 @@ const createResolvers = ({ createResolvers, createNode }) => {
     Query: {
       allTag: {
         type: `TagConnection!`,
-        resolve: (source, args, context, info) => {
+        resolve: async (source, args, context, info) => {
           const tagSet = new Set();
-          const postList = context.nodeModel.getAllNodes({ type: `Mdx` });
-          postList.forEach(post => {
+          const { entries } = await context.nodeModel.findAll({ type: `Mdx` });
+          Array.from(entries).forEach(post => {
             (post.frontmatter.tags || []).forEach(tag => {
               tagSet.add(tag);
             });
@@ -109,3 +123,44 @@ const createResolvers = ({ createResolvers, createNode }) => {
 };
 
 exports.createResolvers = createResolvers;
+
+const createPages = async ({ graphql, actions }) => {
+  const { createPage } = actions;
+  const result = await graphql(`
+    {
+      allMdx {
+        nodes {
+          frontmatter {
+            tags
+          }
+        }
+      }
+    }
+  `);
+
+  const tagSet = new Set();
+  result.data.allMdx.nodes.forEach(node => {
+    (node.frontmatter.tags || []).forEach(tag => tagSet.add(tag));
+  });
+
+  const tagTemplate = path.resolve('./src/templates/tag-posts.tsx');
+  tagSet.forEach(tag => {
+    createPage({
+      path: `/blog/tags/${tag}`,
+      component: tagTemplate,
+      context: { tag },
+    });
+  });
+};
+
+exports.createPages = createPages;
+
+const onCreateWebpackConfig = ({ actions }) => {
+  actions.setWebpackConfig({
+    resolve: {
+      modules: [path.resolve(__dirname, 'node_modules'), 'node_modules'],
+    },
+  });
+};
+
+exports.onCreateWebpackConfig = onCreateWebpackConfig;

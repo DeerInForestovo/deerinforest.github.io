@@ -104,9 +104,11 @@ const RecentlyPublished = () => {
   const { allMdx } = useStaticQuery(
     graphql`
       query {
-        allMdx(limit: 5, sort: { fields: frontmatter___date, order: DESC }) {
+        allMdx(limit: 5, sort: { frontmatter: { date: DESC } }) {
           nodes {
-            slug
+            fields {
+              slug
+            }
             excerpt
             frontmatter {
               title
@@ -125,7 +127,7 @@ const RecentlyPublished = () => {
       <Posts>
         {allMdx.nodes.map(item => {
           return (
-            <Link key={item.slug} to={`/blog/${item.slug}`}>
+            <Link key={item.fields.slug} to={`/blog/${item.fields.slug}`}>
               <h3>{item.frontmatter.title}</h3>
               <p className="desc">{item.excerpt}</p>
               <small>{item.frontmatter.date}</small>
