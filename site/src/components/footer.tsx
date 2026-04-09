@@ -1,6 +1,6 @@
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from '@emotion/styled';
-import { IconBrandGithub, IconRss, IconHeart } from '@tabler/icons-react';
+import { IconBrandGithub, IconRss } from '@tabler/icons-react';
 
 const StyledFooter = styled.footer`
   display: flex;
@@ -125,11 +125,15 @@ const Footer = () => {
         </ul>
         <div className="copyright">
           <span>
-            © {new Date().getFullYear()}, <IconHeart size={14} />{' '}
+            © {new Date().getFullYear()}, <IconBrandGithub size={14} />{' '}
             <a href={site.siteMetadata.author.link}>{site.siteMetadata.author.name}</a>
           </span>
           <PowerBy className="powered-by">
             Powered by <a href="https://github.com/yuzhouu/swallow">Swallow</a>
+          </PowerBy>
+          <PowerBy className="powered-by">
+            Illustrated by{' '}
+            <a href="https://www.pixiv.net/artworks/113013562">Huhv.@Pixiv</a>
           </PowerBy>
         </div>
       </div>

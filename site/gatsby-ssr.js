@@ -1,5 +1,6 @@
 // custom typefaces
 import '@fontsource/nunito';
+import '@fontsource/ma-shan-zheng';
 // normalize CSS across browsers
 import './src/normalize.css';
 // custom CSS styles

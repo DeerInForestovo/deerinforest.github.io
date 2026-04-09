@@ -19,10 +19,12 @@ const Avatar = styled.img`
 `;
 
 const HeroWrapper = styled.div`
-  padding: var(--spacing-12) 0;
+  padding: var(--spacing-16) 0 var(--spacing-12);
   display: flex;
 
   .btn-link {
+    display: inline-block;
+    align-self: flex-start;
     background: var(--color-primary);
     padding: 10px 38px;
     color: #fff;
@@ -33,6 +35,9 @@ const HeroWrapper = styled.div`
 
   .left {
     width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .right {
@@ -43,12 +48,30 @@ const HeroWrapper = styled.div`
   }
 
   .hero__hey {
-    font-size: var(--fontSize-2);
-    font-weight: var(--fontWeight-bold);
+    font-size: var(--fontSize-7);
+    font-weight: var(--fontWeight-black);
+    line-height: 1.15;
+    margin-top: 0;
+    margin-bottom: var(--spacing-3);
+    letter-spacing: -0.02em;
+  }
+
+  .hero__about-title {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: var(--fontSize-7);
+    font-weight: var(--fontWeight-normal);
+    color: #1a2744;
+    margin-top: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+    letter-spacing: 0.1em;
   }
 
   .hero__about {
-    font-weight: var(--fontWeight-medium);
+    font-size: var(--fontSize-2);
+    font-weight: var(--fontWeight-normal);
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-8);
+    line-height: var(--lineHeight-relaxed);
   }
 `;
 

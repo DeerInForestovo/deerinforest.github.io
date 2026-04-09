@@ -29,7 +29,7 @@ const ExploreTags = () => {
 
   return (
     <Wrapper>
-      <UnderlineH2>Explore Tags</UnderlineH2>
+      <UnderlineH2 zh="探索标签" en="Explore Tags" />
       <PostTags className="tags-container" tags={tags} />
     </Wrapper>
   );

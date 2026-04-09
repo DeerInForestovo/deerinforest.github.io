@@ -123,7 +123,7 @@ const RecentlyPublished = () => {
   return (
     <Wrapper>
       <div className="bg"></div>
-      <UnderlineH2>Recently Posts</UnderlineH2>
+      <UnderlineH2 zh="最近文章" en="Recent Posts" />
       <Posts>
         {allMdx.nodes.map(item => {
           return (
@@ -141,7 +141,7 @@ const RecentlyPublished = () => {
           <svg className="circle-2" viewBox="0 0 200 200">
             <circle cx="100" cy="100" r="100" />
           </svg>
-          <span>View all blog posts</span>
+          <span>查看所有文章 View All</span>
         </Link>
       </Posts>
     </Wrapper>

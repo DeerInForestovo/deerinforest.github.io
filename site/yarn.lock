@@ -1201,6 +1201,11 @@
   resolved "https://registry.yarnpkg.com/@expo/sudo-prompt/-/sudo-prompt-9.3.2.tgz#0fd2813402a42988e49145cab220e25bea74b308"
   integrity sha512-HHQigo3rQWKMDzYDLkubN5WQOYXJJE2eNqIQC2axC2iO3mHdwnIR7FgZVvHWtBwAdzBgAP0ECp8KqS8TiMKvgw==
 
+"@fontsource/ma-shan-zheng@^5.2.9":
+  version "5.2.9"
+  resolved "https://registry.yarnpkg.com/@fontsource/ma-shan-zheng/-/ma-shan-zheng-5.2.9.tgz#fcbfcd3333f25d6c02301e1261568c6a87561c19"
+  integrity sha512-5Pvpb5q6sq00/g+yLLE8iYWcsAqnoIqCloBsjN0bphkGWU3Wp3EfT0CgTsKOiLsPM8GN3AUP0ZaFM2/JR33C/g==
+
 "@fontsource/nunito@^5.2.7":
   version "5.2.7"
   resolved "https://registry.yarnpkg.com/@fontsource/nunito/-/nunito-5.2.7.tgz#158a5726437c3899814830db23ec36896fcc44e4"

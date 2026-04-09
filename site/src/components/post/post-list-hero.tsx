@@ -54,7 +54,7 @@ const PostListHero = () => {
 
   return (
     <Wrapper>
-      <UnderlineH2>Blog</UnderlineH2>
+      <UnderlineH2 zh="博客" en="Blog" />
       <p>{data.site.siteMetadata.docs.blogSlogan}</p>
       <svg className="post-hero-bg" viewBox="0 0 1600 600" width="100%" height="200">
         <g className="swallow">
