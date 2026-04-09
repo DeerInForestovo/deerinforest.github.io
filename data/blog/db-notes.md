@@ -860,7 +860,7 @@ Atomic Instruction Example: Compare-and-Swap (CAS), ```__sync_bool_compare_and_s
 + If M is 20, set M to 30 and return true.
 + If M is not 20, do not change M and return false.
 
-Approach 1: Test-and-Set Spin Latch (TAS), ```std::atomic<T> ```
+Approach 1: Test-and-Set Spin Latch (TAS), ```std::atomic```
 + Very efficient: single instruction to latch/unlatch; 
 + Not-scaleable: all threads spin on the same memory location, causing contention and cache coherence traffic;
 + Not cache friendly: the cache line containing the latch is constantly invalidated and updated by different threads.

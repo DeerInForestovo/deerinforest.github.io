@@ -565,8 +565,8 @@ Browser Security Policy
     + Does it achieve all goals?
         + Safe to visit an evil website: Yes, as long as the evil website does not have vulnerabilities that can be exploited.
         + Safe to visit two pages at the same time: Yes, as long as the two pages are from different origins.
-        + Allow safe delegation: No. Risk: ```<script>``` tag can load and execute script from other origins, which can lead to cross-site scripting (XSS) attacks.
-            + Use ```<iframe>``` to embed content from other origins, but it has limited access to the parent page, which can mitigate some risks.
+        + Allow safe delegation: No. Risk: ```script``` tag can load and execute script from other origins, which can lead to cross-site scripting (XSS) attacks.
+            + Use ```iframe``` to embed content from other origins, but it has limited access to the parent page, which can mitigate some risks.
 + Content Security Policy (CSP):
     + Network response header
     + Can prevent inline scripts from running
