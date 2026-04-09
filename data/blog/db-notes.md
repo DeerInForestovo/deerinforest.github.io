@@ -1041,10 +1041,10 @@ Exercises
     
         For $b_b=1$, $P=1$.
         For $b_b=100$, $P=2$.
-    3. Suppose a flash storage device is used instead of a disk, and it has a latency of $20\text{μs}$ and a transfer rate of $400\text{MB/s}$. Recompute the cost of sorting the relation, in seconds, with $b_b=1$ and with $b_b=100$, in this setting.
+    3. Suppose a flash storage device is used instead of a disk, and it has a latency of $20\mu\text{s}$ and a transfer rate of $400\text{MB/s}$. Recompute the cost of sorting the relation, in seconds, with $b_b=1$ and with $b_b=100$, in this setting.
 
         $t_{io}=\frac{4\text{KB}}{400\text{MB/s}}=0.01\text{ms}$.
-        $t_{s}=20\text{μs}=0.02\text{ms}$.
+        $t_{s}=20\mu\text{s}=0.02\text{ms}$.
         For $b_b=1$, $T=n_{io}\times t_{io}+n_s\times t_s=5.0004\times 10^5\text{ms}$.
         For $b_b=100$, $T=n_{io}\times t_{io}+n_s\times t_s=5.0604\times 10^5\text{ms}$.
 

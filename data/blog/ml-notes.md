@@ -44,7 +44,9 @@ $$
 \begin{aligned}
 A^{\top}A&=V\Sigma^{\top} U^{\top} U\Sigma V^{\top}\\
 &=V\Sigma^{\top} \Sigma V^{\top}\\
-&=V\begin{bmatrix}\sigma_1^2 & & \\ & \ddots & \\ & & \sigma_r^2\end{bmatrix}V^{\top}
+&=V\begin{bmatrix}\sigma_1^2 & & \\
+& \ddots & \\
+& & \sigma_r^2\end{bmatrix}V^{\top}
 \end{aligned}
 $$
 
@@ -85,7 +87,7 @@ RSS(\widetilde{\mathbf{w}}) &= \sum_{n=1}^N (y_n - \widetilde{\mathbf{w}}^{\top}
 &=\sum_n(- 2 y_n \widetilde{\mathbf{w}}^{\top} \widetilde{\mathbf{x}}_n + \widetilde{\mathbf{w}}^{\top} \widetilde{\mathbf{x}}_n \widetilde{\mathbf{x}}_n^{\top} \widetilde{\mathbf{w}}) + \text{const}\\
 &=\widetilde{\mathbf{w}}^{\top} \left(\widetilde{\mathbf{X}}^{\top}\widetilde{\mathbf{X}}\right) \widetilde{\mathbf{w}} - 2 \left(\widetilde{\mathbf{X}}^{\top}y\right) \widetilde{\mathbf{w}} + \text{const}\\
 \text{Set}\quad\nabla_{\widetilde{\mathbf{w}}} RSS &= 2 \left(\widetilde{\mathbf{X}}^{\top}\widetilde{\mathbf{X}}\right) \widetilde{\mathbf{w}} - 2 \left(\widetilde{\mathbf{X}}^{\top}y\right) = 0\\
-\text{Least Mean Squares solution}\\\quad\widetilde{\mathbf{w}}^{\text{LMS}} &= \left(\widetilde{\mathbf{X}}^{\top}\widetilde{\mathbf{X}}\right)^{-1} \left(\widetilde{\mathbf{X}}^{\top}y\right)
+\text{Least Mean Squares solution}\quad\widetilde{\mathbf{w}}^{\text{LMS}} &= \left(\widetilde{\mathbf{X}}^{\top}\widetilde{\mathbf{X}}\right)^{-1} \left(\widetilde{\mathbf{X}}^{\top}y\right)
 \end{aligned}
 $$
 
@@ -311,8 +313,10 @@ $$
 To remove the absolute value, we use $y = +1$ to represent positive label and $y = -1$ for negative label, then we have $(\mathbf{w}^{\top}\mathbf{x} + w_0)$ and the label $y$ must have the same sign. So we get
 
 $$
+\begin{aligned}
 d_{\mathcal{H}}(\mathbf{x}) = \frac{y(\mathbf{w}^{\top}\mathbf{x} + w_0)}{\|\mathbf{w}\|_2}\\
 \text{MARGIN}(\mathbf{w}, w_0) = \min_{n} d_{\mathcal{H}}(\mathbf{x}_n)
+\end{aligned}
 $$
 
 To solve the SVM, we want to **maximize** the margin.
