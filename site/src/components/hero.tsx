@@ -19,7 +19,7 @@ const Avatar = styled.img`
 `;
 
 const HeroWrapper = styled.div`
-  padding: var(--spacing-16) 0 var(--spacing-12);
+  padding: calc(var(--spacing-16) + 15rem) 0 var(--spacing-12);
   display: flex;
 
   .left {
@@ -27,8 +27,6 @@ const HeroWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    position: relative;
-    top: 3rem; /* 强行整体相对容器向下偏移 */
   }
 
   .right {

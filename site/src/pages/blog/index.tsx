@@ -9,7 +9,7 @@ import PostList from '../../components/post/post-list';
 import ScrollBackground from '../../components/scroll-background';
 
 const BlogIndexWrapper = styled.div`
-  padding-top: var(--spacing-16);
+  padding-top: calc(var(--spacing-16) + 8rem);
 `;
 
 const BlogIndex = ({ data }) => {

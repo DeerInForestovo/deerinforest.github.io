@@ -18,7 +18,7 @@ const BackgroundDiv = styled.div<{ bgOpacity: number }>`
   transition: opacity 0.1s ease-out;
 `;
 
-const ScrollBackground = ({ maxScroll = 400, maxOpacity = 0.8, minOpacity = 0.2 }) => {
+const ScrollBackground = ({ maxScroll = 400, maxOpacity = 0.6, minOpacity = 0.1 }) => {
   const [bgOpacity, setBgOpacity] = useState(maxOpacity);
 
   useEffect(() => {

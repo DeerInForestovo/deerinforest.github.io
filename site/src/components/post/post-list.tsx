@@ -28,7 +28,7 @@ const Wrapper = styled.ol<{ maxColumns: number }>`
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: var(--spacing-10);
-    padding: var(--spacing-24) 0;
+    padding: var(--spacing-4) 0 var(--spacing-12);
 
     @media (max-width: 40rem) {
       grid-template-columns: 1fr;
