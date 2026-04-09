@@ -7,6 +7,11 @@ const Wrapper = styled.header`
   align-items: center;
   justify-content: space-between;
   height: 80px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
 `;
 
 const Brand = styled(Link)`

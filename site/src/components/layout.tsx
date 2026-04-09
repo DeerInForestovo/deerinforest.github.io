@@ -4,10 +4,14 @@ import HeaderNav from './header-nav';
 import Footer from './footer';
 
 const GlobalWrapper = styled.div`
-  display: grid;
-  grid-template-rows: 80px minmax(200px, 1fr) auto;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   max-width: var(--maxWidth-wrapper);
+
+  main {
+    flex: 1;
+  }
 `;
 
 const Layout = ({ children, full = true }) => {
