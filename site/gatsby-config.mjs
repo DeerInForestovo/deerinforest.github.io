@@ -1,15 +1,18 @@
-const fs = require('fs');
-const path = require('path/posix');
-const remarkMath = require('remark-math');
-const rehypeKatex = require('rehype-katex');
+import fs from 'fs';
+import path from 'path/posix';
+import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 const meta = require('../data/meta.json');
 
 const plugins = [
   {
     resolve: `gatsby-plugin-emotion`,
     options: {
-      // Accepts the following options, all of which are defined by `@emotion/babel-plugin` plugin.
-      // The values for each key in this example are the defaults the plugin uses.
       sourceMap: true,
       autoLabel: 'dev-only',
       labelFormat: `[local]`,
@@ -116,13 +119,10 @@ const plugins = [
       background_color: `#ffffff`,
       theme_color: `#25c19f`,
       display: `minimal-ui`,
-      icon: `../data/images/favicon.png`, // This path is relative to the root of the site.
+      icon: `../data/images/favicon.png`,
     },
   },
   `gatsby-plugin-react-helmet`,
-  // this (optional) plugin enables Progressive Web App + Offline functionality
-  // To learn more, visit: https://gatsby.dev/offline
-  // `gatsby-plugin-offline`,
 ];
 
 try {
@@ -143,7 +143,7 @@ try {
   }
 }
 
-module.exports = {
+const config = {
   siteMetadata: {
     ...meta.site,
     author: meta.author,
@@ -152,3 +152,5 @@ module.exports = {
   pathPrefix: meta.pathPrefix || '',
   plugins,
 };
+
+export default config;

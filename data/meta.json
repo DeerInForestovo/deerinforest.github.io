@@ -1,13 +1,13 @@
 {
   "site": {
-    "title": "Swallow",
-    "siteUrl": "https://yuzhou.github.io/swallow",
-    "description": "Blog template，github action generated blog，no need konw anything about js",
-    "githubRepo": "yuzhouu/swallow",
+    "title": "林空鹿饮溪的博客 | DeerInForest's Blog",
+    "siteUrl": "https://deerinforestovo.github.io/",
+    "description": "DeerInForest's Blog",
+    "githubRepo": "DeerInForestovo/deerinforest.github.io",
     "footerLinks": [
       {
         "name": "github",
-        "link": "https://github.com/yuzhouu/swallow"
+        "link": "https://github.com/DeerInForestovo/deerinforest.github.io"
       },
       {
         "name": "rss",
@@ -17,14 +17,14 @@
     "enableComment": true
   },
   "author": {
-    "name": "YuZhou",
-    "link": "https://github.com/yuzhouu"
+    "name": "DeerInForestovo",
+    "link": "https://github.com/DeerInForestovo"
   },
-  "pathPrefix": "swallow",
+  "pathPrefix": "/",
   "docs": {
-    "hey": "你好呀! 我是 Yuzhou",
-    "title": "一个不知名星空摄影师，developer",
-    "about": "Welcome! It's great to have you here. I'm curious about the things under the nut, and I write some thing about javascript and golang.",
-    "blogSlogan": "细雨鱼儿出，微风燕子斜"
+    "hey": "DeerInForest's Blog",
+    "title": "林空鹿饮溪的博客",
+    "about": "分享有意思的 CS/AI 技术",
+    "blogSlogan": "霜落熊升树，林空鹿饮溪。————《鲁山山行》梅尧臣"
   }
 }

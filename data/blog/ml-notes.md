@@ -554,7 +554,7 @@ $$\epsilon_t = \sum_{n} w_t(n) 1[y_n \neq h_t(x_n)]$$
 
 $$w_{t+1}(n) \propto w_t(n) e^{-\beta_t y_n h_t(x_n)}$$
 
-    ($w_t(n)$ decreased if $y_n = h_t(x_n)$; increased if $y_n \neq h_t(x_n)$) and normalize them such that $\sum_{n} w_{t+1}(n) = 1$.
+($w_t(n)$ decreased if $y_n = h_t(x_n)$; increased if $y_n \neq h_t(x_n)$) and normalize them such that $\sum_{n} w_{t+1}(n) = 1$.
 + Output the final classifier:
 
 $$H(x) = \text{sign}\left(\sum_{t=1}^T \beta_t h_t(x)\right)$$

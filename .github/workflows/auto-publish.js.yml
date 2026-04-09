@@ -17,25 +17,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Cache Yarn cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/yarn
-          key: ${{ runner.os }}-yarn-${{ hashFiles('site/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: site/yarn.lock
       - run: yarn install
       - run: |
           git config user.name 'github-actions[bot]'
