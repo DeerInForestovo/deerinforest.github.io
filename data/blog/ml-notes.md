@@ -1,6 +1,6 @@
 ---
-title: 18661 Machine Learning ~ Notes
-tags: [notes]
+title: CMU 18661 Machine Learning | Notes
+tags: [课程笔记]
 date: 2026-02-17
 ---
 
