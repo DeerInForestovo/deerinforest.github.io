@@ -22,17 +22,6 @@ const HeroWrapper = styled.div`
   padding: var(--spacing-16) 0 var(--spacing-12);
   display: flex;
 
-  .btn-link {
-    display: inline-block;
-    align-self: flex-start;
-    background: var(--color-primary);
-    padding: 10px 38px;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 100px;
-    font-weight: bold;
-  }
-
   .left {
     width: 50%;
     display: flex;
@@ -101,14 +90,6 @@ const Hero = () => {
         <h1 className="hero__hey">{hey}</h1>
         <h2 className="hero__about-title">{title}</h2>
         <p className="hero__about">{about}</p>
-        <div style={{ display: 'flex', gap: 'var(--spacing-4)' }}>
-          <Link className="btn-link" to="/blog">
-            Blog
-          </Link>
-          <Link className="btn-link" style={{ backgroundColor: '#1a2744' }} to="/about">
-            About me
-          </Link>
-        </div>
       </div>
       <div className="right">
         {hasLocalAvatar ? (
