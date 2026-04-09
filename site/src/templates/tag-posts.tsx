@@ -25,7 +25,6 @@ const TagPosts = ({ data, pageContext }) => {
         <h3>
           {posts.length} posts tagged with 『{curTag}』
         </h3>
-        <Link to="/blog/tags">View all tags</Link>
       </section>
 
       <PostList posts={posts} />
