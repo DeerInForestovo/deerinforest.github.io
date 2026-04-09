@@ -42,6 +42,21 @@ const Posts = styled.div`
     h3 {
       margin: 0 0 var(--spacing-3);
       font-size: var(--fontSize-3);
+
+      .top-badge {
+        display: inline-block;
+        background: #f57c00;
+        color: #fff;
+        font-size: 0.65em;
+        font-weight: var(--fontWeight-bold);
+        line-height: 1;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-right: 8px;
+        vertical-align: middle;
+        position: relative;
+        top: -1px;
+      }
     }
 
     .desc {
@@ -104,7 +119,7 @@ const RecentlyPublished = () => {
   const { allMdx } = useStaticQuery(
     graphql`
       query {
-        allMdx(limit: 5, sort: { frontmatter: { date: DESC } }) {
+        allMdx(sort: { frontmatter: { date: DESC } }) {
           nodes {
             fields {
               slug
@@ -113,6 +128,7 @@ const RecentlyPublished = () => {
             frontmatter {
               title
               date(formatString: "MMMM DD, YYYY")
+              top
             }
           }
         }
@@ -120,15 +136,24 @@ const RecentlyPublished = () => {
     `
   );
 
+  const pinned = allMdx.nodes
+    .filter(n => n.frontmatter.top && n.frontmatter.top > 0)
+    .sort((a, b) => a.frontmatter.top - b.frontmatter.top);
+  const rest = allMdx.nodes.filter(n => !n.frontmatter.top || n.frontmatter.top <= 0);
+  const sorted = [...pinned, ...rest].slice(0, 5);
+
   return (
     <Wrapper>
       <div className="bg"></div>
       <UnderlineH2 zh="最近文章" en="Recent Posts" />
       <Posts>
-        {allMdx.nodes.map(item => {
+        {sorted.map(item => {
           return (
             <Link key={item.fields.slug} to={`/blog/${item.fields.slug}`}>
-              <h3>{item.frontmatter.title}</h3>
+              <h3>
+                {item.frontmatter.top > 0 && <span className="top-badge">TOP</span>}
+                {item.frontmatter.title}
+              </h3>
               <p className="desc">{item.excerpt}</p>
               <small>{item.frontmatter.date}</small>
             </Link>

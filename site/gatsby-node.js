@@ -62,6 +62,9 @@ const createSchemaCustomization = ({ actions, schema }) => {
       newer: Mdx
       older: Mdx
     }
+    type MdxFrontmatter {
+      top: Int
+    }
   `;
 
   createTypes([typeDefs, TagType]);

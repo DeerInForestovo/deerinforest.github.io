@@ -2,6 +2,7 @@
 title: AI-infra 找工向笔记
 tags: [Work]
 date: 2026-03-30
+top: 2
 ---
 
 This article is particularly for Chinese students, so I will not provide English translation.
