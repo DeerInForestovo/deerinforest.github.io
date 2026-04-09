@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path/posix';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
+import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
@@ -40,7 +41,7 @@ const plugins = [
       extensions: [`.mdx`, `.md`],
       mdxOptions: {
         format: 'md',
-        remarkPlugins: [remarkMath],
+        remarkPlugins: [remarkGfm, remarkMath],
         rehypePlugins: [rehypeKatex],
       },
       gatsbyRemarkPlugins: [
