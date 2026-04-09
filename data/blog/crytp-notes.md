@@ -1,5 +1,5 @@
 ---
-title: 18631 Information Security | Notes
+title: CMU 18631 Information Security | Notes
 tags: [LectureNotes]
 date: 2026-02-18
 ---

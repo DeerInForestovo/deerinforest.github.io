@@ -1,5 +1,5 @@
 ---
-title: CMU 15645 Intro to Database Systems | Notes
+title: CMU 15645 Database Systems | Notes
 tags: [LectureNotes]
 date: 2026-02-20
 ---
