@@ -1,6 +1,6 @@
 ---
 title: CMU 15-650 Algorithm and Advanced Data Structure | Notes
-tags: [课程笔记]
+tags: [LectureNotes]
 date: 2025-09-26
 ---
 

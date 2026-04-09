@@ -1,6 +1,6 @@
 ---
 title: 18631 Information Security | Notes
-tags: [课程笔记]
+tags: [LectureNotes]
 date: 2026-02-18
 ---
 

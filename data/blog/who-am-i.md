@@ -1,6 +1,6 @@
 ---
 title: Who am I?
-tags: [文章]
+tags: [Article]
 date: 2025-08-01
 ---
 
@@ -16,11 +16,11 @@ Outside of academics, I enjoy connecting with people from around the world and m
 
 ### OI/ICPC Awards
 
-+ <span class="silver">Silver Medal</span> @ 46th ICPC East-Asian Continental Final (EC-Final)
-+ <span class="gold">Gold Medal</span> @ 46th ICPC Asian Regional Contest (Shanghai)
-+ <span class="silver">Silver Medal</span> @ 46th ICPC Asian Regional Contest (Shandong)
-+ <span class="gold">First Prize</span> @ NOIp Junior Group 2015, 2016, 2017, and Senior Group 2017, 2018, 2019 (CSP-S), 2020
-+ <span class="bronze">Third Prize</span> @ CTSC (CTS) 2019
++ **Gold Medal** @ 46th ICPC Asian Regional Contest (Shanghai)
++ **Silver Medal** @ 46th ICPC East-Asian Continental Final (EC-Final)
++ **Silver Medal** @ 46th ICPC Asian Regional Contest (Shandong)
++ **First Prize** @ NOIp Junior Group 2015, 2016, 2017, and Senior Group 2017, 2018, 2019 (CSP-S), 2020
++ **Third Prize** @ CTSC (CTS) 2019
 
 ### Publication
 

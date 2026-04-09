@@ -1,6 +1,6 @@
 ---
 title: CMU 18-755 Networks in the Real World | Notes
-tags: [课程笔记]
+tags: [LectureNotes]
 date: 2025-09-26
 ---
 
