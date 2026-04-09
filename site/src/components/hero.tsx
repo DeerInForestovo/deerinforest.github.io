@@ -101,9 +101,14 @@ const Hero = () => {
         <h1 className="hero__hey">{hey}</h1>
         <h2 className="hero__about-title">{title}</h2>
         <p className="hero__about">{about}</p>
-        <Link className="btn-link" to="/blog">
-          Blog
-        </Link>
+        <div style={{ display: 'flex', gap: 'var(--spacing-4)' }}>
+          <Link className="btn-link" to="/blog">
+            Blog
+          </Link>
+          <Link className="btn-link" style={{ backgroundColor: '#1a2744' }} to="/about">
+            About me
+          </Link>
+        </div>
       </div>
       <div className="right">
         {hasLocalAvatar ? (
