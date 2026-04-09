@@ -25,36 +25,12 @@ const Brand = styled(Link)`
   }
 `;
 
-const _NavLink = styled(Link)`
-  align-items: center;
-  display: flex;
-  height: 2rem;
-  margin-right: 1rem;
-  min-width: 0;
-  text-decoration: none;
-  color: var(--color-heading);
-  font-weight: var(--fontWeight-medium);
-
-  &:hover {
-    color: var(--color-primary);
-    text-decoration: none;
-  }
-
-  &.active {
-    color: var(--color-primary);
-  }
-`;
-
 const NavItems = styled.div`
   align-items: center;
   display: flex;
   flex: 1;
   min-width: 0;
 `;
-
-const NavLink = props => {
-  return <_NavLink {...props} activeClassName="active"></_NavLink>;
-};
 
 const HeaderNav = () => {
   const { site } = useStaticQuery(
@@ -73,7 +49,6 @@ const HeaderNav = () => {
     <Wrapper className="container">
       <NavItems>
         <Brand to="/">{site.siteMetadata.title}</Brand>
-        <NavLink to="/blog">Blog</NavLink>
       </NavItems>
     </Wrapper>
   );
