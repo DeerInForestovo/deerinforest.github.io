@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path/posix');
+const remarkMath = require('remark-math');
+const rehypeKatex = require('rehype-katex');
 const meta = require('../data/meta.json');
 
 const plugins = [
@@ -33,6 +35,11 @@ const plugins = [
     resolve: `gatsby-plugin-mdx`,
     options: {
       extensions: [`.mdx`, `.md`],
+      mdxOptions: {
+        format: 'md',
+        remarkPlugins: [remarkMath],
+        rehypePlugins: [rehypeKatex],
+      },
       gatsbyRemarkPlugins: [
         {
           resolve: `gatsby-remark-images`,
