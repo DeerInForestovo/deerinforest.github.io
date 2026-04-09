@@ -12,11 +12,13 @@ interface Props {
       date: string;
       title: string;
       tags: string[];
+      top?: number;
     };
   }>;
+  maxColumns?: number;
 }
 
-const Wrapper = styled.ol`
+const Wrapper = styled.ol<{ maxColumns: number }>`
   position: relative;
   margin: 0;
 
@@ -33,7 +35,7 @@ const Wrapper = styled.ol`
     }
 
     @media (min-width: 96rem) {
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: repeat(${p => p.maxColumns}, 1fr);
     }
   }
 
@@ -69,11 +71,34 @@ const Post = styled.article`
     h2 {
       margin: 0 0 var(--spacing-3);
       font-size: var(--fontSize-3);
+
+      .top-badge {
+        display: inline-block;
+        background: #f57c00;
+        color: #fff;
+        font-size: 0.65em;
+        font-weight: var(--fontWeight-bold);
+        line-height: 1;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-right: 8px;
+        vertical-align: middle;
+        position: relative;
+        top: -1px;
+      }
     }
   }
 
   section {
     color: var(--color-text-light);
+
+    p {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 0;
+    }
   }
 
   footer {
@@ -81,12 +106,18 @@ const Post = styled.article`
   }
 `;
 
-const PostList = ({ posts }: Props) => {
+const PostList = ({ posts, maxColumns = 3 }: Props) => {
+  const pinned = posts
+    .filter(p => p.frontmatter.top && p.frontmatter.top > 0)
+    .sort((a, b) => a.frontmatter.top! - b.frontmatter.top!);
+  const rest = posts.filter(p => !p.frontmatter.top || p.frontmatter.top <= 0);
+  const sorted = [...pinned, ...rest];
+
   return (
-    <Wrapper>
+    <Wrapper maxColumns={maxColumns}>
       <div className="bg"></div>
       <ol>
-        {posts.map(post => {
+        {sorted.map(post => {
           const title = post.frontmatter.title || post.fields.slug;
 
           return (
@@ -96,6 +127,7 @@ const PostList = ({ posts }: Props) => {
                   <small>{post.frontmatter.date}</small>
                   <h2>
                     <Link to={`/blog/${post.fields.slug}`} itemProp="url">
+                      {post.frontmatter.top > 0 && <span className="top-badge">TOP</span>}
                       <span itemProp="headline">{title}</span>
                     </Link>
                   </h2>

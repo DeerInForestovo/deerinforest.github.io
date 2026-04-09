@@ -34,6 +34,7 @@
 // exports.sourceNodes = sourceNodes;
 
 const path = require('path');
+const slugify = require('slugify');
 const { createFilePath } = require('gatsby-source-filesystem');
 
 const onCreateNode = ({ node, actions, getNode }) => {
@@ -149,7 +150,7 @@ const createPages = async ({ graphql, actions }) => {
   const tagTemplate = path.resolve('./src/templates/tag-posts.tsx');
   tagSet.forEach(tag => {
     createPage({
-      path: `/blog/tags/${tag}`,
+      path: `/blog/tags/${slugify(tag, { remove: /[.\\]+/g, lower: true })}`,
       component: tagTemplate,
       context: { tag },
     });

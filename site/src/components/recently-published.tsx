@@ -1,6 +1,7 @@
 import { useStaticQuery, graphql, Link } from 'gatsby';
 import styled from '@emotion/styled';
 import UnderlineH2 from './underline-h2';
+import PostList from './post/post-list';
 
 const Wrapper = styled.div`
   position: relative;
@@ -16,101 +17,25 @@ const Wrapper = styled.div`
   }
 `;
 
-const Posts = styled.div`
-  margin: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: var(--spacing-10);
-  padding: var(--spacing-4) 0 var(--spacing-3);
-
-  @media (max-width: 40rem) {
-    grid-template-columns: 1fr;
-  }
-
-  @media (min-width: 96rem) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
+const MoreLink = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-4) 0 var(--spacing-8);
 
   a {
-    display: block;
-    text-decoration: none;
-    border-radius: var(--spacing-2);
-    padding: var(--spacing-6);
-    box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 3%);
-    background: #ffffff;
-
-    h3 {
-      margin: 0 0 var(--spacing-3);
-      font-size: var(--fontSize-3);
-
-      .top-badge {
-        display: inline-block;
-        background: #f57c00;
-        color: #fff;
-        font-size: 0.65em;
-        font-weight: var(--fontWeight-bold);
-        line-height: 1;
-        padding: 2px 8px;
-        border-radius: 4px;
-        margin-right: 8px;
-        vertical-align: middle;
-        position: relative;
-        top: -1px;
-      }
-    }
-
-    .desc {
-      color: var(--color-text-light);
-    }
-
-    small {
-      color: #4a576c;
-    }
-  }
-
-  .more {
+    display: inline-block;
     text-align: center;
     background: #352970;
     color: #ffffff;
     border-radius: var(--spacing-2);
-    font-weight: var(--fontWeight-black);
-    position: relative;
-    padding: var(--spacing-8) var(--spacing-6);
+    font-weight: var(--fontWeight-bold);
+    padding: var(--spacing-4) var(--spacing-10);
+    text-decoration: none;
     position: relative;
     overflow: hidden;
-    height: 88px;
-
-    .circle-1 {
-      position: absolute;
-      opacity: 0.075;
-      width: 400px;
-      left: -200px;
-      top: 30px;
-      transition: all 2s ease;
-
-      circle {
-        fill: #f0f1ff;
-      }
-    }
-    .circle-2 {
-      position: absolute;
-      opacity: 0.075;
-      width: 200px;
-      right: -100px;
-      bottom: 20px;
-      transition: all 1.5s ease;
-      circle {
-        fill: #f0f1ff;
-      }
-    }
 
     &:hover {
-      .circle-1 {
-        transform: translate(40px, -50px);
-      }
-      .circle-2 {
-        transform: translate(-30px, 10px);
-      }
+      opacity: 0.9;
     }
   }
 `;
@@ -128,6 +53,7 @@ const RecentlyPublished = () => {
             frontmatter {
               title
               date(formatString: "MMMM DD, YYYY")
+              tags
               top
             }
           }
@@ -146,29 +72,10 @@ const RecentlyPublished = () => {
     <Wrapper>
       <div className="bg"></div>
       <UnderlineH2 zh="最近文章" en="Recent Posts" />
-      <Posts>
-        {sorted.map(item => {
-          return (
-            <Link key={item.fields.slug} to={`/blog/${item.fields.slug}`}>
-              <h3>
-                {item.frontmatter.top > 0 && <span className="top-badge">TOP</span>}
-                {item.frontmatter.title}
-              </h3>
-              <p className="desc">{item.excerpt}</p>
-              <small>{item.frontmatter.date}</small>
-            </Link>
-          );
-        })}
-        <Link to="/blog" className="more">
-          <svg className="circle-1" viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="100" />
-          </svg>
-          <svg className="circle-2" viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="100" />
-          </svg>
-          <span>查看所有文章 View All</span>
-        </Link>
-      </Posts>
+      <PostList posts={sorted} maxColumns={2} />
+      <MoreLink>
+        <Link to="/blog">查看所有文章 View All</Link>
+      </MoreLink>
     </Wrapper>
   );
 };

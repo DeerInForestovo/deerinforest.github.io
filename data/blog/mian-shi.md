@@ -1,6 +1,6 @@
 ---
 title: AI-infra 找工向笔记
-tags: [Work]
+tags: [Work, Article]
 date: 2026-03-30
 top: 3
 ---

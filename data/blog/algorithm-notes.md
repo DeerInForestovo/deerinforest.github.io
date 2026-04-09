@@ -1,5 +1,5 @@
 ---
-title: CMU 15-650 Algorithm and Advanced Data Structure | Notes
+title: CMU 15650 DSAA | Notes
 tags: [LectureNotes]
 date: 2025-09-26
 ---
