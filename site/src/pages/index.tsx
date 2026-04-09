@@ -5,6 +5,7 @@ import Seo from '../components/seo';
 import Hero from '../components/hero';
 import RecentlyPublished from '../components/recently-published';
 import ExploreTags from '../components/explore-tags';
+import ScrollBackground from '../components/scroll-background';
 
 const Wrapper = styled.div`
   display: grid;
@@ -21,6 +22,7 @@ const Home = () => {
   return (
     <Layout>
       <Seo title="Home" />
+      <ScrollBackground />
       <Hero />
       <Wrapper>
         <RecentlyPublished />

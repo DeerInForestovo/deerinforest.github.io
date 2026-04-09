@@ -27,6 +27,8 @@ const HeroWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative;
+    top: 3rem; /* 强行整体相对容器向下偏移 */
   }
 
   .right {
@@ -37,7 +39,7 @@ const HeroWrapper = styled.div`
   }
 
   .hero__hey {
-    font-size: var(--fontSize-7);
+    font-size: var(--fontSize-5);
     font-weight: var(--fontWeight-black);
     line-height: 1.15;
     margin-top: 0;
@@ -54,14 +56,6 @@ const HeroWrapper = styled.div`
     margin-bottom: var(--spacing-6);
     letter-spacing: 0.1em;
   }
-
-  .hero__about {
-    font-size: var(--fontSize-2);
-    font-weight: var(--fontWeight-normal);
-    color: var(--color-text-light);
-    margin-bottom: var(--spacing-8);
-    line-height: var(--lineHeight-relaxed);
-  }
 `;
 
 const Hero = () => {
@@ -73,7 +67,6 @@ const Hero = () => {
           docs {
             hey
             title
-            about
           }
         }
       }
@@ -82,14 +75,13 @@ const Hero = () => {
 
   // Set these values by editing "siteMetadata" in gatsby-config.js
   const githubUsername = data.site.siteMetadata.githubRepo.split('/')[0];
-  const { hey, title, about } = data.site.siteMetadata.docs;
+  const { hey, title } = data.site.siteMetadata.docs;
 
   return (
     <HeroWrapper>
       <div className="left">
         <h1 className="hero__hey">{hey}</h1>
         <h2 className="hero__about-title">{title}</h2>
-        <p className="hero__about">{about}</p>
       </div>
       <div className="right">
         {hasLocalAvatar ? (

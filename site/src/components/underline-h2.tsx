@@ -29,8 +29,8 @@ const Wrapper = styled.div`
   .section-title-en {
     display: block;
     font-size: var(--fontSize-0);
-    font-weight: var(--fontWeight-semibold);
-    color: var(--color-text-light);
+    font-weight: 900;
+    color: #000000;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-top: var(--spacing-1);

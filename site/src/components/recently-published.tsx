@@ -5,16 +5,6 @@ import PostList from './post/post-list';
 
 const Wrapper = styled.div`
   position: relative;
-
-  .bg {
-    position: absolute;
-    left: 15%;
-    right: 10%;
-    height: 100%;
-    background: #f8f8fc;
-    z-index: -1;
-    clip-path: polygon(0% 0%, 100% 5%, 100% 90%, 0% 95%);
-  }
 `;
 
 const MoreLink = styled.div`
@@ -70,7 +60,6 @@ const RecentlyPublished = () => {
 
   return (
     <Wrapper>
-      <div className="bg"></div>
       <UnderlineH2 zh="最近文章" en="Recent Posts" />
       <PostList posts={sorted} maxColumns={2} />
       <MoreLink>

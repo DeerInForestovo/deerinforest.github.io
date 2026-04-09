@@ -42,16 +42,6 @@ const Wrapper = styled.ol<{ maxColumns: number }>`
   li {
     list-style: none;
   }
-
-  .bg {
-    position: absolute;
-    left: 15%;
-    right: 10%;
-    height: 100%;
-    background: #f8f8fc;
-    z-index: -1;
-    clip-path: polygon(0% 0%, 100% 5%, 100% 90%, 0% 95%);
-  }
 `;
 
 const Post = styled.article`
@@ -115,7 +105,6 @@ const PostList = ({ posts, maxColumns = 3 }: Props) => {
 
   return (
     <Wrapper maxColumns={maxColumns}>
-      <div className="bg"></div>
       <ol>
         {sorted.map(post => {
           const title = post.frontmatter.title || post.fields.slug;

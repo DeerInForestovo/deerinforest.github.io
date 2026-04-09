@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import Layout from '../components/layout';
 import Seo from '../components/seo';
+import ScrollBackground from '../components/scroll-background';
 
 const Container = styled.div`
   max-width: 800px;
@@ -64,6 +65,7 @@ const AboutPage = () => {
   return (
     <Layout>
       <Seo title="About Me" />
+      <ScrollBackground maxOpacity={0.2}/>
       <Container>
         <h1>Who am I?</h1>
         
