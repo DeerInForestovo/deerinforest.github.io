@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { Link } from 'gatsby';
 import useTOCHighlight from '../../hooks/useTocHighlight';
 
 const linkClassName = 'toc-link';
@@ -50,9 +49,9 @@ const TOCHeadings = ({ toc, isChild = false }: TOCProps) => {
       {toc.map(heading => {
         return (
           <li key={heading.url}>
-            <Link to={heading.url} className={linkClassName}>
+            <a href={heading.url} className={linkClassName}>
               {heading.title}
-            </Link>
+            </a>
 
             <TOCHeadings isChild={true} toc={heading.items} />
           </li>
@@ -64,13 +63,13 @@ const TOCHeadings = ({ toc, isChild = false }: TOCProps) => {
 
 const TOCWrapper = styled.div`
   position: sticky;
-  top: var(--spacing-10);
-  min-width: 10rem;
-  max-width: 20rem;
+  top: 90px;
+  min-width: 18rem;
+  max-width: 35rem;
   margin-left: var(--spacing-3);
   padding-left: var(--spacing-2);
   border-left: 1px solid var(--color-border);
-  font-size: var(--fontSize-0);
+  font-size: var(--fontSize-1);
 `;
 
 const TOC = ({ toc }: { toc: TOCHeading[] }) => {

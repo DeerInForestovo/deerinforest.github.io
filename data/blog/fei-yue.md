@@ -7,7 +7,7 @@ top: 1
 
 This article is particularly for Chinese students, so I will not provide English translation.
 
-# 前言
+## 前言
 
 本文允许任何形式的转载，只需标明出处（保留本段即可）。如果你在其他地方看到这篇博文，也欢迎访问我的博客查看[原文](https://deerinforestovo.github.io/article/2025/02/28/fei-yue.html)。
 
@@ -19,7 +19,7 @@ This article is particularly for Chinese students, so I will not provide English
 
 **2025.07.23 更新：** 今天有学弟私戳我说博客挂了，研究了一下为什么，顺便更新了一下表格里的最终结果。除了CMU和莱斯（和补申的港中深），其他果然全挂了。所以也是再次提醒大家，多申多申多申。
 
-# 三维
+## 三维
 
 **2026.04.08 更新：** 这里我本来是公开了自己申请时用的简历，但是站在现在的角度来看，实在算不上一个好的参考，而且也泄露了一定的个人信息。因此我决定把简历撤下了，大家可以在网上搜到很多很好的模板，然后根据自己的情况写。
 
@@ -28,7 +28,7 @@ This article is particularly for Chinese students, so I will not provide English
 + 托福：103=29+28+20+26
 + GRE：318=148+170(+3.5)
 
-# 时间轴
+## 时间轴
 
 请注意，这是我个人的时间轴，是已经发生过的、无法更改的事情，并不代表我推荐它。事实上，它有很多值得改进的地方，需要大家阅读后续的文字内容。
 
@@ -57,7 +57,7 @@ This article is particularly for Chinese students, so I will not provide English
   - 写文书、申请；等待 offer，完成毕设并准备出国。
 
 
-# 如果时间能倒流
+## 如果时间能倒流
 
 总体来说，我对自己的规划与执行还是满意的。如果说有什么不够满足的，可能主要有以下三点吧。
 
@@ -67,7 +67,7 @@ This article is particularly for Chinese students, so I will not provide English
 
 + 大三暑假花了好多时间准备 GRE ，最后既没考好也没用上，如果能刷一段实习，我的简历就更充实了。
 
-# 工具/资源集
+## 工具和资源集
 
 + [NYH的笔记](https://github.com/NYH-Dolphin/SUSTech-Course-Info)：来自计系的校十佳毕业生公开的课程资料。
 
@@ -79,7 +79,7 @@ This article is particularly for Chinese students, so I will not provide English
 
 + 可以从 B站/小红书/reddit 等社交平台上获取一定的信息，但是在我的申请过程中帮助不大。
 
-# 申请的院校
+## 申请的院校
 
 | 地区 | 项目 | 结果 |
 | --- | --- | --- |
@@ -95,7 +95,7 @@ This article is particularly for Chinese students, so I will not provide English
 
 我申请的项目数量偏少（严重偏少！），而且我也几乎没申bar低的项目托底（按opencs的评分，托底是莱斯），要不是运气好被CMU和莱斯捞了一手就要gap去了，因此建议同学们还是稍微多申请一点。至于我为什么申请的这么少……请从文中细节得知。
 
-# 语言成绩
+## 语言成绩
 
 我的第一次托福是27+22+19+26，第二次29+28+20+26，虽然总分提高了不少，但是我真正花时间准备的后两科一共提高了一分……简单分享一下我自己的感受吧，大家见仁见智。
 
@@ -123,14 +123,14 @@ This article is particularly for Chinese students, so I will not provide English
 
 至于 GRE 就不分享了，我考的自己也不满意，也不知道咋学。
 
-# 申请中我踩的坑
+## 申请中我踩的坑
 
 1. 一些教授有自己的考量，只会给你提供有限份数的推荐信！最好是提前确认好，另外也要考虑推荐信的适配程度（推荐老师和目标项目的关系）。
 2. 一切申请流程，赶早不赶晚。至少提前一周提交。要准备好一张 visa 卡。
 3. 宜AI润色，忌AI写作，AI翻译也慎用。只要使用了AI工具，一定要人工核查一遍。
 4. 推荐使用 overleaf 上他人公开的 latex 模板制作简历，简历长度建议是一页。
 
-# 其他申请相关的经验or想法
+## 其他申请相关的经验or想法
 
 1. 多方参考胜过相信权威；难度一直变化，经验总会失效；难度讲总体，结果讲个例；申请是多元函数，录取与否难预知；**申请到再多，只能去一个**；适合自己胜过难度更高；读研只是方法，读研并非目的。[reference](https://opencs.app/zen/)
 2. 国际形势变化不定，放平心态，留好后路。
