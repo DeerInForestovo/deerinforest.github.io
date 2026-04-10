@@ -178,7 +178,7 @@ const ListCard = styled(GlassCard)`
       color: var(--color-heading);
     }
     
-    strong.gold { color: #ffd700; }
+    strong.gold { color: #f1cd00ff; }
     strong.silver { color: #c0c0c0; }
     strong.bronze { color: #cd7f32; }
   }
@@ -262,18 +262,20 @@ const AboutPage = () => {
               <li>
                 <StaticImage className="edu-icon" src="../../../data/images/sustech-logo.png" alt="SUSTech" />
                 <strong>B.S. in Computer Science</strong> <br />
-                Southern University of Science and Technology (<em>Turing Class Honors</em>)
+                <small>Southern University of Science and Technology</small> <br />
+                Aug. 2021 - Jun. 2025, <em>Turing Class</em>
               </li>
               <li>
                 <StaticImage className="edu-icon" src="../../../data/images/cmu-logo.png" alt="CMU" />
                 <strong>M.S. in Electrical and Computer Engineering</strong> <br />
-                Carnegie Mellon University
+                Carnegie Mellon University <br />
+                Aug. 2025 - Dec. 2026
               </li>
             </ul>
           </ProfileCard>
 
           <MainContactCard>
-            <h3>Main Contacts</h3>
+            <h3>邮箱</h3>
             <a href="mailto:liangk@andrew.cmu.edu">
               <span>liangk@andrew.cmu.edu</span>
             </a>
