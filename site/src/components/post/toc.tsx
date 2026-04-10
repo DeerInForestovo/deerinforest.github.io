@@ -63,13 +63,29 @@ const TOCHeadings = ({ toc, isChild = false }: TOCProps) => {
 
 const TOCWrapper = styled.div`
   position: sticky;
-  top: 90px;
+  top: 100px;
   min-width: 18rem;
   max-width: 35rem;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
   margin-left: var(--spacing-3);
   padding-left: var(--spacing-2);
   border-left: 1px solid var(--color-border);
   font-size: var(--fontSize-1);
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 4px;
+  }
 `;
 
 const TOC = ({ toc }: { toc: TOCHeading[] }) => {
