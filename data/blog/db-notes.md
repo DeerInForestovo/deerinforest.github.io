@@ -2,6 +2,7 @@
 title: CMU 15645 Database Systems | Notes
 tags: [LectureNotes]
 date: 2026-02-20
+background: background-6.jpg
 ---
 
 Notes for CMU-15645 Introduction to Database Systems.

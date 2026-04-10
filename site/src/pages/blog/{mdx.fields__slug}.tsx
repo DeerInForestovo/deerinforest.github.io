@@ -9,6 +9,7 @@ import PostTags from '../../components/post/post-tags';
 import TOC from '../../components/post/toc';
 import { MDXProvider } from '../../components/mdx/mdx-provider';
 import PostComment from '../../components/post/post-comment';
+import ScrollBackground from '../../components/scroll-background';
 
 const Wrapper = styled.div`
   margin: var(--spacing-0) auto;
@@ -59,6 +60,7 @@ const BlogPostTemplate = ({ data, children }) => {
 
   return (
     <PostLayout>
+      <ScrollBackground bgName={post.frontmatter.background} />
       <Seo title={post.frontmatter.title} description={post.excerpt} />
       <Wrapper>
         <article className="blog-post" itemScope itemType="http://schema.org/Article">
@@ -95,6 +97,7 @@ export const pageQuery = graphql`
         title
         date(formatString: "MMMM DD, YYYY")
         tags
+        background
       }
       postNav {
         newer {

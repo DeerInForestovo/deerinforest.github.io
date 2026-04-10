@@ -2,6 +2,7 @@
 title: CMU 18631 Information Security | Notes
 tags: [LectureNotes]
 date: 2026-02-18
+background: background-2.jpg
 ---
 
 Notes for CMU-18631 Introduction to Information Security.

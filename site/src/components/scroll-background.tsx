@@ -1,15 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import bgImage from '../../../data/images/background/main-background.jpg';
 
-const BackgroundDiv = styled.div<{ bgOpacity: number }>`
+const bgImages: Record<string, string> = {
+  'background-1.jpg': require('../../../data/images/background/background-1.jpg').default || require('../../../data/images/background/background-1.jpg'),
+  'background-2.jpg': require('../../../data/images/background/background-2.jpg').default || require('../../../data/images/background/background-2.jpg'),
+  'background-3.jpg': require('../../../data/images/background/background-3.jpg').default || require('../../../data/images/background/background-3.jpg'),
+  'background-4.jpg': require('../../../data/images/background/background-4.jpg').default || require('../../../data/images/background/background-4.jpg'),
+  'background-5.jpg': require('../../../data/images/background/background-5.jpg').default || require('../../../data/images/background/background-5.jpg'),
+  'background-6.jpg': require('../../../data/images/background/background-6.jpg').default || require('../../../data/images/background/background-6.jpg'),
+  'background-7.jpg': require('../../../data/images/background/background-7.jpg').default || require('../../../data/images/background/background-7.jpg'),
+  'main-background.jpg': require('../../../data/images/background/main-background.jpg').default || require('../../../data/images/background/main-background.jpg'),
+};
+
+const BackgroundDiv = styled.div<{ bgOpacity: number; bgImage: string }>`
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   z-index: -1;
-  background-image: url(${bgImage});
+  background-image: url(${props => props.bgImage});
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -18,8 +28,10 @@ const BackgroundDiv = styled.div<{ bgOpacity: number }>`
   transition: opacity 0.1s ease-out;
 `;
 
-const ScrollBackground = ({ maxScroll = 400, maxOpacity = 0.6, minOpacity = 0.1 }) => {
+const ScrollBackground = ({ bgName = 'main-background.jpg', maxScroll = 400, maxOpacity = 0.6, minOpacity = 0.1 }) => {
   const [bgOpacity, setBgOpacity] = useState(maxOpacity);
+  
+  const currentBg = bgImages[bgName] || bgImages['main-background.jpg'];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,9 +49,9 @@ const ScrollBackground = ({ maxScroll = 400, maxOpacity = 0.6, minOpacity = 0.1 
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [maxScroll, maxOpacity, minOpacity]);
 
-  return <BackgroundDiv bgOpacity={bgOpacity} />;
+  return <BackgroundDiv bgOpacity={bgOpacity} bgImage={currentBg} />;
 };
 
 export default ScrollBackground;

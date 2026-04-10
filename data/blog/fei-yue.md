@@ -3,6 +3,7 @@ title: 飞跃手册：个人申请经验分享
 tags: [FeiYue]
 date: 2025-02-28
 top: 1
+background: background-4.jpg
 ---
 
 This article is particularly for Chinese students, so I will not provide English translation.

@@ -2,6 +2,7 @@
 title: CMU 18661 Machine Learning | Notes
 tags: [LectureNotes]
 date: 2026-02-17
+background: background-1.jpg
 ---
 
 Notes for CMU-18661 Introduction to Machine Learning for Engineers.
