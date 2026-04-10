@@ -20,7 +20,8 @@ const BackgroundDiv = styled.div<{ bgOpacity: number; bgImage: string }>`
 const ScrollBackground = ({ bgName = 'main-background.jpg', maxScroll = 400, maxOpacity = 0.6, minOpacity = 0.1 }) => {
   const [bgOpacity, setBgOpacity] = useState(maxOpacity);
   
-  const req = require(`../../../data/images/background/${bgName}`);
+  const safeBgName = bgName || 'main-background.jpg';
+  const req = require(`../../../data/images/background/${safeBgName}`);
   const currentBg = req.default || req;
 
   useEffect(() => {
