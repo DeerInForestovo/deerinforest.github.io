@@ -65,7 +65,7 @@ const AboutPage = () => {
   return (
     <Layout>
       <Seo title="About Me" />
-      <ScrollBackground maxOpacity={0.2}/>
+      <ScrollBackground minOpacity={0.6}/>
       <Container>
         <h1>Who am I?</h1>
         

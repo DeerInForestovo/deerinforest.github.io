@@ -24,6 +24,9 @@ const ScrollBackground = ({ maxScroll = 400, maxOpacity = 0.6, minOpacity = 0.1 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
+      if (maxScroll < 0) {
+        maxScroll = 400;
+      }
       let newOpacity = maxOpacity - (scrollY / maxScroll) * (maxOpacity - minOpacity);
       if (newOpacity < minOpacity) newOpacity = minOpacity;
       setBgOpacity(newOpacity);

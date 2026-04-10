@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 
 import Layout from '../components/layout';
 import Seo from '../components/seo';
+import ScrollBackground from '../components/scroll-background';
 
 const Wrapper = styled.div`
   padding: var(--spacing-0) var(--spacing-16);
@@ -16,6 +17,7 @@ const NotFoundPage = ({ data, location }) => {
   return (
     <Layout>
       <Seo title="404: Not Found" />
+      <ScrollBackground maxOpacity={0.4} minOpacity={0.4} />
       <Wrapper>
         <h1>404: Not Found</h1>
         <p>You just hit a route that doesn&#39;t exist... the sadness.</p>
