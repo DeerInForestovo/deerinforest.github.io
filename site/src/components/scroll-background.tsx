@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import bgImage from '../../../data/images/background.jpg';
+import bgImage from '../../../data/images/background/main-background.jpg';
 
 const BackgroundDiv = styled.div<{ bgOpacity: number }>`
   position: fixed;
