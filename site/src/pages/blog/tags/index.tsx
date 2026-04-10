@@ -3,6 +3,7 @@ import { graphql } from 'gatsby';
 import Layout from '../../../components/layout';
 import Seo from '../../../components/seo';
 import ExploreTags from '../../../components/explore-tags';
+import ScrollBackground from '../../../components/scroll-background';
 
 const TagIndex = ({ data }) => {
   const tags = data.allTag.nodes.map(item => item.name);
@@ -11,6 +12,7 @@ const TagIndex = ({ data }) => {
     return (
       <Layout full={false}>
         <Seo title="All tags" />
+        <ScrollBackground minOpacity={0.1} />
         <p>No Tags found. Add tags filed to post's frontmatter.</p>
       </Layout>
     );
@@ -19,6 +21,7 @@ const TagIndex = ({ data }) => {
   return (
     <Layout full={false}>
       <Seo title="All tags" />
+      <ScrollBackground minOpacity={0.1} />
       <ExploreTags />
     </Layout>
   );

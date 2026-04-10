@@ -4,6 +4,7 @@ import { graphql, Link } from 'gatsby';
 import Layout from '../components/layout';
 import Seo from '../components/seo';
 import PostList from '../components/post/post-list';
+import ScrollBackground from '../components/scroll-background';
 
 const TagPosts = ({ data, pageContext }) => {
   const posts = data.allMdx.nodes;
@@ -13,6 +14,7 @@ const TagPosts = ({ data, pageContext }) => {
     return (
       <Layout full={false}>
         <Seo title={`Posts tagged with ${curTag}`} />
+        <ScrollBackground minOpacity={0.1} />
         <h5>No blog posts tagged with {curTag} found. Add tag to post's tags frontmatter.</h5>
       </Layout>
     );
@@ -21,6 +23,7 @@ const TagPosts = ({ data, pageContext }) => {
   return (
     <Layout full={false}>
       <Seo title={`Posts tagged with ${curTag}`} />
+      <ScrollBackground minOpacity={0.1} />
       <section>
         <h3>
           {posts.length} posts tagged with 『{curTag}』
