@@ -1422,3 +1422,63 @@ View Serializability:
 
 If commits, always exists. Also logging/shadow-paging.
 
+## Lecture 18: Two-Phase Locking
+
+### Two-Phase Locking (2PL)
+
+Phase 1: Growing
++ Each txn requests the locks that it needs from the DBMS’s lock manager.
++ The lock manager grants/denies lock requests.
+Phase 2: Shrinking
++ The txn is allowed to only release/downgrade locks that it previously acquired. It cannot acquire new locks.
+
+### Problem without 2PL
+
++ T1: Lock(A), W(A), Unlock(A)
++ T2: Lock(A), W(A), Unlock(A)
++ T1: Lock(A), Read(A): A have been modified by T2
+
+### 2PL Problems: Cascade Aborts
+
+|T1|T2|Discussion|
+|-|-| |
+|BEGIN| | |
+|X-Lock(A)| | |
+|X-Lock(B)| | |
+|R(A)| | |
+|W(A)| | |
+|UNLOCK(A)|BEGIN| |
+| |R(A)|Dirty Read|
+| |W(A)| |
+|...|...| |
+|ROLLBACK|???|Wasted work|
+
+#### Schedule Properties
+
++ Recoverable
+    + A txn commits only after all other txns from which it has read dirty objects have successfully committed.
++ Avoids Cascading Aborts (ACA):
+    + A txn can only read objects that have already been committed by the txns that wrote them (i.e., no dirty reads).
++ Strict:
+    + A txn cannot read or write an object until the txn that previously wrote it has committed or aborted.
++ Rigorous:
+    + A txn cannot read or write an object until the txn that last read or wrote it has committed or aborted.
+
+#### 2PL Variants
+
++ Strict 2PL (S2PL):
+    + Txns hold all exclusive locks until commit/abort.
+    + The most common variant.
+    + Schedules: Recoverable, ACA, Strict
++ Strong Strict 2PL (SS2PL):
+    + Txns hold both shared and exclusive locks until commit/abort.
+    + Schedules: Recoverable, ACA, Strict
++ Rigorous 2PL (R2PL):
+    + Txns hold all locks until commit/abort.
+    + In practice, same as SS2PL.
+    + Schedules: Recoverable, ACA, Strict, Rigorous
+
+![Universe of Schedules](./figures/universe-of-schedules.png)
+
+### 2PL Problems: Deadlocks
+
