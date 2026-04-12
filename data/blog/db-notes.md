@@ -1482,3 +1482,332 @@ Phase 2: Shrinking
 
 ### 2PL Problems: Deadlocks
 
+#### Deadlock Detection & Handling
+
+The DBMS creates a waits-for graph to keep track of what locks each txn is waiting to acquire:
++ Nodes are transactions
++ Edge from $T_i$ to $T_j$ if $T_i$ is waiting for $T_j$ to release a lock.
+
+Victim Selection:
++ Selecting the proper victim depends on a lot of different variables….
+    + By age (lowest timestamp)
+    + By progress (least/most queries executed)
+    + By the number of items already locked
+    + By the number of txns that we have to rollback with it
++ We also should consider the number of times a txn has been restarted in the past to prevent starvation.
+
+Handling:
++ Rollback entire txn and tell the application it was aborted.
++ Or, rolls back a portion of a txn (to break deadlock) and then attempts to re-execute the undone queries.
+
+#### Deadlock Prevention
+
+Old Waits for Young, Wait-Die:
++ If requesting txn has higher priority than holding txn, then
+requesting txn waits for holding txn.
++ Otherwise requesting txn aborts.
+
+Young Waits for Old, Wound-Wait:
++ If requesting txn has higher priority than holding txn, then
+requesting txn preempts holding txn (i.e., holding txn aborts).
++ Otherwise requesting txn waits.
+
+Why do these schemes guarantee no deadlocks?
++ Txns only wait for locks in one direction.
+
+When a txn restarts, what is its (new) priority?
++ Its original timestamp, to prevent it from getting starved for resources.
+
+### Lock Hierarchy
+
+|Lock on ...|is ...|for ...|
+|-|-|-|
+|Database|Slightly Rare|Database-wide operations (e.g. update, backup)|
+|Table|Very Common|ALERT TABLE...|
+|Page|Common|Page-level operations (e.g. read, write)|
+|Tuple|Very Common|2PL|
+|Attribute|Rare|-|
+
+#### Intention Locks
+
+An intention lock allows a higher-level node to be locked in shared or exclusive mode without having to check all descendent nodes.
+
+If a node is locked in an intention mode, then some txn is doing explicit locking at a lower level in the tree.
+
+Summary: Lazy-tag
+
+Intention-Shared (IS):
++ Indicates explicit locking at lower level with S locks.
++ Intent to get S lock(s) at finer granularity.
+
+Intention-Exclusive (IX):
++ Indicates explicit locking at lower level with X locks.
++ Intent to get X lock(s) at finer granularity.
+
+Shared+Intention-Exclusive (SIX):
++ The subtree rooted by that node is locked explicitly in S mode and explicit locking is being done at a lower level with X locks.
++ E.g. Txn wants to read the salary of all employees and give bonus to some of them.
+
+Locking Protocol:
++ Each txn obtains the appropriate lock at highest level of the database hierarchy.
++ To get S or IS lock on a node, the txn must hold at least IS on parent node.
++ To get X, IX, or SIX on a node, must hold at least IX on parent node.
+
+|T1 holds vs T2 wants|IS|IX|S|SIX|X|
+|-|-|-|-|-|-|
+|IS|Yes|Yes|Yes|Yes|No|
+|IX|Yes|Yes|No|No|No|
+|S|Yes|No|Yes|No|No|
+|SIX|Yes|No|No|No|No|
+|X|No|No|No|No|No|
+
+Lock Escalation:
++ If a txn holds too many locks, the DBMS can automatically escalate them to a coarser granularity to reduce the overhead of managing many fine-grained locks.
+
+### Locking in Practice
+
+Sometimes you need to provide the DBMS with hints to help it to improve concurrency.
+
++ ```SELECT ... FOR UPDATE```: acquire exclusive locks on the selected rows to prevent other txns from modifying them until the current txn commits or rolls back.
++ ```SELECT ... SKIP LOCKED```: skip rows that are currently locked by other txns, allowing the current txn to continue processing without waiting for those locks to be released. This is useful for avoiding deadlocks and improving concurrency in scenarios where multiple txns are trying to access the same set of rows.
+
+## Lecture 19: Timestamp Ordering & Isolation Levels
+
+### Optimistic Concurrency Control (OCC)
+
+Timestamp ordering protocol where DBMS creates a private workspace for each txn.
++ Any object read is copied into workspace.
++ Modifications are applied to workspace.
+
+When a txn commits, the DBMS compares workspace write set to see whether it conflicts with other txns. If there are no conflicts, the write set is installed into the "global" database.
+
+OCC Phases
++ Read
+    + Track the read/write sets of txns and store their writes in a private workspace.
+    + DBMS copies every tuple that the txn accesses from the shared database to its workspace ensure repeatable reads.
++ Validation (Logical Commit)
+    + Assign the txn a unique timestamp (TS) and then check whether it conflicts with other txns.
+    + NOTE: TS is the timestamp of the VALIDATION phase, not the read/write phase, not the beginning/ending of the txn.
+    + Forward validation: Check whether the committing txn intersects its read/write sets with any active txns that have not yet committed. E.g. $T_1$ wants to commit, $T_2$ is active ($T_1<T_2$):
+        + Case 1, $T_1$ completes before $T_2$ starts
+        + Case 2, $T_1$ completes its **Write Phase** before $T_2$ **starts** its **Write Phase**, and $T_1$ does not modify to any object **read** by $T_2$ (i.e. $WriteSet(T_1)\cap ReadSet(T_2)=\emptyset$)
+        + Case 3, $T_1$ completes its **Read Phase** before $T_2$ **completes** its **Read Phase**, and $T_1$ does not modify to any object **either read or written** by $T_2$ (i.e. $WriteSet(T_1)\cap (ReadSet(T_2)\cup WriteSet(T_2))=\emptyset$)
+        + Hint: Our goal here is to promise the serializability of the schedule. Therefore,
+            + if $T_1$ **writes** first, then $T_1$ do not need to worry about whether its WriteSet intersects with the WriteSet of $T_2$;
+            + however, if $T_2$ **write** first (i.e. $T_1$'s Write Phase and $T_2$'s Write Phase overlaps), then $T_1$ needs to make sure that it's WriteSet does not intersect with the WriteSet of $T_2$, otherwise $T_1$ and $T_2$ are not serializable.
+    + Backward validation: Check whether the committing txn intersects its read/write sets with those of any txns that have already committed.
+        + If $T_1$ is committing, and $T_2$ has already committed ($T_2<T_1$), then $T_1$ can commit only if $T_1$ does not read any object modified by $T_2$ (i.e. $ReadSet(T_1)\cap WriteSet(T_2)=\emptyset$)
+
+| |Forward Validation|Backward Validation|
+|-|-|-|
+|Target|WriteSet of Ti vs. ReadSet of active txns|ReadSet of Ti vs. WriteSets of committed txns|
+|Abort Timing|Abort txns at Commit Time or earlier during execution|Only at Commit Time|
+|Flexibility|Higher (can abort Ti or active conflicting txn)|Lower (usually aborts Ti)|
+
++ Write
+    + If validation succeeds, set the write timestamp (W-TS) to all modified objects in private workspace and install them into the global database. Otherwise abort txn.
+
+Observations:
++ OCC works well when the number of conflicts is low:
+    + All txns are read-only (ideal).
+    + Txns access disjoint subsets of data.
++ But OCC has its own problems:
+    + High overhead for copying data locally.
+    + Validation/Write phase bottlenecks.
+    + Aborts are more wasteful than in 2PL because they only occur after a txn has already executed.
+
+### Phantom Reads
+
+A txn scans a range more than once and another txn inserts/removes tuples that fall within that range in between the scans.
+
+Solutions to the Phantom Problem:
++ Approach 1: Lock Everything! (Common)
+    + Entire database, table, or every page.
++ Approach 2: Re-Execute Scans (Rare)
+    + Run queries again at commit to see whether they produce a different result to identify missed changes.
++ Approach 3: Predicate Locking (Less Common)
+    + Identify conflicts by examining query predicates.
+    + Compare read/write sets (physical) or direct predicates (logical)
++ Approach 4: Index Locking (Common)
+    + Use keys in indexes to protect ranges.
+    + Approaches:
+        + Key-Value Locks: Lock the key values in the index. Needs "virtual keys" for non-existent keys.
+        + Gap Locks: Acquires a key-value lock on the single key that it wants to access, then acquires a gap lock on the next key gap.
+        + Key-Range Locks: Acquires a lock covers a key value and the gap after it. Needs "virtual keys" for artificial values (inf).
+        + Hierarchical Locking: Allows key-range locks with different modes.
+
+### Isolation Levels
+
+Isolation levels, high to low:
+
+Serializable (SS2PL + phantom protection): No phantoms, all reads repeatable, no dirty reads.
+Repeatable Read (SS2PL): Phantoms may happen.
+Read Committed (SS2PL, but S locks are released immediately): Phantoms, unrepeatable reads, and lost updates may happen.
+Read Uncommitted (SS2PL, no S locks): All anomalies may happen.
+
+## Lecture 20-21: Multi-Versioning Concurrency Control (MVCC)
+
+Multiple physical versions of a single logical object in the database.
++ Write: Creates a new version of that object.
++ Read: Reads the latest version of that object.
++ Use timestamps to determine visibility.
++ If no GC, DBMS even supports time travel queries.
++ Benefits: Writers do not block readers, and readers do not block writers.
+
+### MVCC + 2PL
+
+|T1|T2|
+|-|-|
+|BEGIN| |
+|R(A)=A0| |
+|W(A)->A1|BEGIN|
+| |R(A)=A0|
+| |W(A), wait|
+|R(A)=A1| |
+|COMMIT|waked up|
+| |W(A)->A2|
+| |COMMIT|
+
+### Snapshot Isolation (SI)
+
+When a txn starts, it sees a consistent snapshot of the database that existed when that the txn started.
+
+Write skew anomaly: SI can not prevent logical inconsistencies.
++ Requirement: $A+B\ge0$.
++ T1: $R(A)=1, R(B)=1, W(A)=-1$.
++ T2: $R(A)=1, R(B)=1, W(B)=-1$.
++ Result: $A+B=-2$.
+
+### Serializable Snapshot Isolation (SSI)
+
+If a txn $T_1$ reads a version of an object, and then another txn $T_2$ writes a new version of that object, then $T_1$ is said to have a read-write anti-dependency on $T_2$ (i.e. $T_1\rightarrow T_2$). When a cycle is detected, the DBMS aborts one of the txns.
+
+### Version Storage
+
+Approach 1: Append-Only Storage (Don't do this)
+Approach 2: Time-Travel Storage (Rare)
++ Old versions are copied to a separate storage area
+Approach 3: Delta Storage (Most common)
++ The original values of modified objects are stored in a separate delta record space.
+
+### Garbage Collection
+
+The DBMS needs to remove reclaimable physical versions from the database over time.
++ No active txn in the DBMS can "see" that version (SI).
++ The version was created by an aborted txn.
+
+Two additional design decisions:
++ How to look for expired versions?
++ How to decide when it is safe to reclaim memory?
+
+Approach 1: Tuple-level
++ Background Vacuuming: A background process periodically scans the database for expired versions and removes them.
++ Cooperative Cleaning: When a txn accesses a version, it checks whether that version is expired and removes it if it is.
+    + Only for O2N (Old to New) storage.
+
+Approach 2: Transaction-level
++ Txns keep track of their old versions.
+
+### Block Compaction
+
+Goal: Consolidating less-than-full blocks into fewer blocks and then returning empty blocks to storage (e.g., OS).
++ Approach 1: Time Since Last Update, ```BEGIN-TS```
++ Approach 2: Time Since Last Access, ```READ-TS```
++ Approach 3: Application-level Semantics
+
+### MVCC Indexes
+
+Index management with MVCC:
++ update $\rightarrow$ delete + insert
++ delete $\rightarrow$ mark as deleted
+
+Secondary indexes:
++ Approach 1: Logical Pointers
+    + Fixed identifier per tuple that does not change.
+    + Good for writes: identifiers do not change
+    + Bad for reads: one extra lookup from id to tuple.
++ Approach 2: Physical Pointers
+    + Point directly to the physical location of the tuple.
+    + Good for reads: no extra lookup.
+    + Bad for writes: need to update the index entry when a new version is created.
+
+## Lecture 22: Database Logging
+
+### Policies
+
+Atomicity
++ STEAL policy:
+    + Allows the DBMS to write dirty pages to disk before the transaction commits.
+    + If the transaction later aborts, the DBMS must rely on UNDO log records.
++ NO-STEAL policy:
+    + The buffer pool needs to be large enough.
+
+Durability
++ FORCE policy:
+    + DBMS forces all dirty pages to disk when a transaction commits.
+    + High commit latency.
++ NO-FORCE policy:
+    + If a transaction commits and the system shuts down before the dirty pages are flushed to disk, the DBMS must rely on REDO log records to recover the changes made by the committed transaction.
+
+Shadow Paging
++ NO-STEAL + FORCE
++ DBMS makes a copy of page before a txn modifies it.
++ To install updates when a txn commits, overwrite the root so it points to the shadow, thereby swapping the master and shadow.
+
+SQLite
++ STEAL + FORCE
++ When a txn modifies a page, the DBMS copies the original page to a separate journal file before overwriting master version.
+    + Called rollback mode.
++ After restarting, if a journal file exists, then the DBMS restores it to undo changes from uncommitted txns.
+
+### Write-Ahead Logging (WAL)
+
+WAL:
++ STEAL + NO-FORCE
++ Maintain a log file separate from data files that contains the changes that txns make to database.
+    + Assume that the log is on stable storage.
+    + Log contains enough information to perform the necessary undo and redo actions to restore the database.
++ DBMS must write to disk the log file records that correspond to changes made to a database object before it can flush that object to disk.
+
+WAL Protocol:
++ The DBMS stages all a txn's log records in volatile storage.
++ All log records pertaining to an updated page are written to non-volatile storage before the page itself is over-written in non-volatile storage.
++ A txn is not considered committed until all its log records have been written to non-volatile storage.
++ Write a ```BEGIN``` record to the log for each txn to mark its starting point.
++ Append a record every time a txn changes an object:
+    + Transaction Id
+    + Object Id
+    + Before Value (UNDO) (not necessary for append-only MVCC)
+    + After Value (REDO)
++ When a txn finishes, the DBMS appends a ```COMMIT``` record to the log.
+    + Make sure that all log records are flushed before it returns an acknowledgement to application.
++ Group commit: flush when the buffer is full or there is a timeout.
+
+Log-Structured Systems:
++ Log-structured DBMSs do not have dirty pages.
+    + Any page retrieved from disk is immutable.
++ The DBMS buffers log records in in-memory pages (MemTable). If this buffer is full, it must be flushed to disk. But it may contain changes uncommitted txns.
++ These DBMSs still maintain a separate WAL to recreate the MemTable on crash.
+
+Logging Schemes:
++ Physical Logging: record byte-level changes made to a specific page.
+    + E.g. ```git diff```
++ Logical Logging: record high-level operations performed by a transaction.
+    + E.g. ```UPDATE, DELETE, INSERT```
++ Physiological Logging:
+    + Physical to a page, logical within a page
+
+### Change Data Capture (CDC)
+
+Automatically propagate changes to external sources to replicate and synchronize database contents.
++ Goal: Extract Transform Load (ETL)
++ Some systems can do this automatically. Others require third-party tools.
+
+### Checkpoints
+
++ Pause all queries.
++ Flush all WAL records in memory to disk.
++ Flush all modified pages in buffer pool to disk.
++ Write a ```CHECKPOINT``` to WAL and flush to disk.
++ Resume queries.
+
