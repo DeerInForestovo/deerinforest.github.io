@@ -576,3 +576,11 @@ No content.
 
 ## Lecture 19: Distributed Synchronous SGD
 
+## Lecture 20-22: Clustering
+
+## Lecture 23: PCA
+
+## Lecture 24: Online Learning & Multiple Arm Bandits
+
+## Lecture 25-26: Reinforcement Learning
+
