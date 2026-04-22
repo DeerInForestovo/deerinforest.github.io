@@ -1811,3 +1811,114 @@ Automatically propagate changes to external sources to replicate and synchronize
 + Write a ```CHECKPOINT``` to WAL and flush to disk.
 + Resume queries.
 
+## Lecture 23: Database Recovery
+
+### ARIES
+
+ARIES: Algorithm for Recovery and Isolation Exploiting Semantic
+
+Why: Modern DBMS applies STEAL + NO-FORCE, which needs Redo + Undo
+
+Main Ideas:
++ Write-Ahead Logging:
+    + Flush WAL record(s) changes to disk before a database object is written to disk.
+    + Must use STEAL + NO-FORCE buffer pool policies.
++ Repeating History During Redo:
+    + On DBMS restart, retrace actions and restore database to exact state before crash.
++ Logging Changes During Undo:
+    + Record undo actions to log to ensure action is not repeated in the event of repeated failures.
+
+### WAL Bookkeeping
+
+Every log record includes a globally unique log sequence number (LSN).
++ LSNs represent the physical order that txns make changes to the database.
+
+Each data page contains a pageLSN.
++ The LSN of the most recent log record that updated the page.
+
+System keeps track of flushedLSN.
++ The max LSN flushed so far.
+
+**WAL: Before a pagex is written, pageLSNx ** $\le$ ** flushedLSN**
++ Otherwise, the page may contain changes that have not been logged yet.
+
+Log Sequence Numbers:
+
+
+| Name | Location | Definition |
+|-|-|-|
+| flushedLSN | Memory | Last LSN in log on disk |
+| pageLSN | page$_x$ | Newest update to page$_x$ |
+| recLSN | Dirty Page Table | Oldest update to page$_x$ since it was last flushed |
+| lastLSN | Active Transaction Table | Latest record of txn T$_i$ |
+| MasterRecord | Disk | LSN of latest checkpoint |
+
+
+### Transaction Abort
+
+We need to add another field to our log records:
++ prevLSN: The previous LSN for the txn.
++ This maintains a linked-list for each txn to make it easier to walk through its log records.
++ Need to record the steps to undo the txn.
+
+A compensation log record (CLR) describes the actions taken to reverse (i.e., undo) the changes of a previous update log record.
++ Each CLR contains all the fields of an update log record plus the undoNextLSN pointer (i.e., next-to-be-undone LSN).
+
+Abort Algorithm:
++ First write an ```ABORT``` record to log for the txn.
++ Then analyze the txn's updates in reverse order. For each update record:
+    + Write a ```CLR``` entry to the log.
+    + Restore old value.
++ Lastly, write a ```TXN-END``` record and release locks.
++ Notice: ```CLR```s never need to be undone.
+
+### Fuzzy Checkpointing
+
+Checkpoints:
++ Write a ```CHECKPOINT``` record to log with the following information:
+    + Dirty Page Table: list of dirty pages in buffer pool and their recLSNs.
+    + Active Transaction Table: list of active txns and their lastLSNs.
+    + Tells the system that: Records with LSN $\le$ flushedLSN are on disk
+
+Non-fuzzy checkpointing: Halts everything before checkpointing
++ Halt the start of new txns.
++ Wait for active txns to finish.
++ Flush all dirty pages to disk.
+
+Slightly better checkpointing: Pause modifying txns
++ Flush all dirty pages to disk.
++ Block queries from acquiring write latch on pages.
+
+Active Transaction Table (ATT):
++ One entry per currently active txn.
+    + txnId: Unique txn identifier.
+    + status: The current status mode of the txn.
+        + Running (R)
+        + Committing (C)
+        + Candidate for Undo (U)
+    + lastLSN: Most recent LSN created by the txn.
+Remove a txn's ATT entry after appending its the TXNEND record to the in-memory WAL buffer.
+
+Dirty Page Table (DPT):
++ Separate data structure to track which pages in the buffer pool contain changes that the DBMS has not flushed to disk yet.
++ One entry per dirty page in the buffer pool:
+    + recLSN: The LSN of the oldest log record that modified the page since the last time the DBMS wrote the page to disk. This allows the DBMS to reason about whether the page was modified before or after the checkpoint started.
+
+Fuzzy Checkpointing:
+A fuzzy checkpoint does not correspond to a single, perfectly consistent snapshot of the DBMS state.
++ Txns keep running while DBMS writes dirty pages out to disk.
++ Pages may contain changes from both before/after the checkpoint started.
++ New log records to track checkpoint boundaries:
+    + CHECKPOINT-BEGIN: Indicates start of checkpoint
+    + CHECKPOINT-END: Contains the state of the ATT + DPT during the checkpoint interval.
+
+Aries: Recovery Phases
++ Analysis
+    + Examine the WAL in forward direction starting at MasterRecord to identify dirty pages in the buffer pool and active txns at the time of the crash.
++ Redo
+    + Repeat all actions starting from an appropriate point in the log (even txns that will abort).
++ Undo
+    + Reverse the actions of txns that did not commit before the crash.
+
+## Lecture 24-25: Distributed Database
+
