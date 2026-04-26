@@ -719,8 +719,6 @@ Activation functions introduce non-linearity, allowing the network to learn comp
 | Hidden Layer | Converts inputs into "classification features." | Highly problem dependent! (ReLU, Leaky ReLU) |
 | Output Layer | Produces the final classification decision. | Softmax (Multi-class), Sigmoid (Binary) |
 
-#### Common Activation Functions
-
 + Sigmoid / Tanh: Traditional choices, but prone to the vanishing gradients problem
     + Gradients become near-zero for large/small inputs, halting learning
 + Hard Sigmoid / Hard Tanh: Computationally cheaper linear approximations of their smooth counterparts.
@@ -736,7 +734,35 @@ Activation functions introduce non-linearity, allowing the network to learn comp
 
 ---
 
+### Loss Functions
 
++ Least squares: commonly used for regression tasks, measuring the average squared difference between estimated values and the actual value.
+
+$$
+\text{MSE} = \frac{1}{N} \sum_{n=1}^N (y_n - \hat{y}_n)^2
+$$
+
++ Cross-Entropy Loss: preferred for classification, measuring the performance of a classification model whose output is a probability value between 0 and 1.
+
+$$
+\text{Cross-Entropy} = -\sum_{n=1}^N \sum_{c=1}^C y_{n,c} \log(\hat{y}_{n,c})
+$$
+
+### Back-propagation
+
+The process of updating parameters $\textbf{w}$ and $b$ through these steps:
++ Step 1: Forward-propagate to find the output $z_k$ in terms of the input (the feed-forward signals).
++ Step 2: Calculate output error $E$ by comparing the predicted output $z_k$ to its true value $t_k$.
++ Step 3: Back-propagate $E$ by weighting it by the gradients of the associated activation functions and the weights in previous layers.
++ Step 4: Calculate the gradients $\frac{dE}{d\textbf{w}}$ and $\frac{dE}{db}$ for the parameters $\textbf{w}$, $b$ at each layer based on the backpropagated error signal and the feedforward signals from the inputs.
+
+### Optimization and SGD
+
++ Mini-batch Gradient Descent: using a small subset of data to calculate gradients for faster convergence.
++ Learning rate decay: reducing the step size over time to settle into a local minimum.
++ Momentum: accelerating SGD in the relevant direction and dampening oscillations.
++ Nesterov Momentum: a look-ahead version of momentum for better stability.
++ Adam: adaptive moment estimation that computes individual adaptive learning rates for different parameters.
 
 ## Lecture 18: PyTorch
 
@@ -744,7 +770,175 @@ No content.
 
 ## Lecture 19: Distributed Synchronous SGD
 
+### Stochastic Gradient Descent Convergence:
+
+A $c$-strongly convex function $f$ satisfies:
+
+$$
+f(\mathbf{y}) \geq f(\mathbf{x}) + \nabla f(\mathbf{x})^{\top} (\mathbf{y} - \mathbf{x}) + \frac{c}{2} \|\mathbf{y} - \mathbf{x}\|_2^2, \forall \mathbf{x}, \mathbf{y}
+$$
+
+A $L$-smooth function $f$ satisfies:
+
+$$
+f(\mathbf{y}) \leq f(\mathbf{x}) + \nabla f(\mathbf{x})^{\top} (\mathbf{y} - \mathbf{x}) + \frac{L}{2} \|\mathbf{y} - \mathbf{x}\|_2^2, \forall \mathbf{x}, \mathbf{y}
+$$
+
+For a $c$-strongly convex and $L$-smooth function, if the learning rate $\eta \leq \frac{1}{L}$, after $t$ iterations, we have
+
+$$
+F(\mathbf{w}_t) - F(\mathbf{w}^*) \leq \left(1 - \eta c\right)^t (F(\mathbf{w}_0) - F(\mathbf{w}^*))
+$$
+
+which gives $t=O(\log (\frac{1}{\epsilon}))$ to reach $\epsilon$-accuracy.
+
+### Mini-Batch Gradient Descent Convergence:
+
+Assumptions:
++ Unbiased Gradient: $\mathbb{E}_{\xi}[\nabla f(\mathbf{w}; \xi)] = \nabla F(\mathbf{w})$
++ Bounded Variance: $Var(\nabla f(\mathbf{w}; \xi)) \leq \sigma^2$
+    + For a mini-batch of size $b$, the variance of the gradient is reduced to $\frac{\sigma^2}{b}$.
+
+For a $c$-strongly convex and $L$-smooth function, if the learning rate $\eta \leq \frac{1}{L}$, after $t$ iterations, we have
+
+$$
+\mathbb{E}[F(\mathbf{w}_t) - F(\mathbf{w}^*)] - \frac{\eta L \sigma^2}{2c b} \leq \left(1 - \eta c\right)^t (F(\mathbf{w}_0) - F(\mathbf{w}^*) - \frac{\eta L \sigma^2}{2c b})
+$$
+
+where $\frac{\eta L \sigma^2}{2c b}$ is the error floor due to the variance of the stochastic gradient.
+
+Key optimization idea: learning rate decay.
+
+### Distributed Synchronous SGD:
+
+Each worker computes the gradient on its own mini-batch and sends it to the parameter server.
+
+Assumptions:
++ $m$ workers, each with a mini-batch of size $b$, so the total mini-batch size is $mb$.
++ Unbiased Gradient: $\mathbb{E}_{\xi}[\nabla f(\mathbf{w}; \xi)] = \nabla F(\mathbf{w})$
++ Bounded Variance: $Var(\nabla f(\mathbf{w}; \xi)) \leq \sigma^2$, $Var(\frac{1}{m} \sum_{i=1}^m \nabla f(\mathbf{w}; \xi_i)) \leq \frac{\sigma^2}{mb}$
+
+Error floor: $\frac{\eta L \sigma^2}{2c mb}$
+
+Trade-off: runtime.
+
+### Distributed Synchronous SGD, Runtime:
+
+Exponential Random Variable $x$: $f_X(x) = \lambda e^{-\lambda x}, x \geq 0$
++ Mean: $\mathbb{E}[x] = \frac{1}{\lambda}$
++ Variance: $Var(x) = \frac{1}{\lambda^2}$
++ Memoryless property: $P(x > s + t | x > s) = P(x > t)$
+
+Order Statistics:
++ Suppose we have $n$ i.i.d. random variables $X_1, X_2, \ldots, X_n$
++ Order statistics are obtained by ordering the random variables: $X_{1:n}\leq X_{2:n} \leq \ldots \leq X_{n:n}$, where $X_{k:n}$ is the $k$-th smallest random variable, called the $k$-th order statistic.
+
+For exponential random variables:
++ Consider $X_1, X_2, \ldots, X_n$ i.i.d. exponential random variables with parameter $\mu$.
++ What is $\mathbb{E}[X_{1:n}]$?
+    + $\Pr(X_{1:n} > x) = \Pr(X_1 > x)^n = (e^{-\mu x})^n = e^{-n\mu x}$
+    + Therefore, $X_{1:n}$ is also an exponential random variable with parameter $n\mu$, and $\mathbb{E}[X_{1:n}] = \frac{1}{n\mu}$.
++ What is $\mathbb{E}[X_{n:n}]$?
+    + First timer runs out in $\mathbb{E}[X_{1:n}] = \frac{1}{n\mu}$ time.
+    + Recall the memoryless property of exponential random variables.
+    + Thus, after the first timer runs out, it is as if you started the remaining $n-1$ timers from scratch.
+    + $\mathbb{E}[X_{n:n}] = \mathbb{E}[X_{1:n}] + \mathbb{E}[X_{n-1:n-1}] = \frac{1}{n\mu} + \frac{1}{(n-1)\mu} + \ldots + \frac{1}{\mu} \approx \frac{\log n}{\mu}$
+
+### Asynchronous SGD:
+
+Each worker asynchronously does the following:
+1. Pulls the current version $\mathbf{w}_t$ of the model
+2. Computes a mini-batch gradient $g(\mathbf{w}_t)$ and sends it to the PS
+Each time the PS receives a gradient $g(\mathbf{w}_{\tau(t)})$ where $\tau(t) < t$ from a
+worker it updates the model as
+$\mathbf{w}_{t+1} = \mathbf{w}_t - \eta g(\mathbf{w}_{\tau(t)}; \xi_i)$
+
+Compare to synchronous SGD:
++ Faster runtime
++ But higher error floor
+
+### Local Updates:
+
+Each worker does $\tau$ local updates before sending the gradient to the PS
+
+### Covergence of Local SGD:
+
+Assumptions:
++ $L$-smooth
++ Unbiased Gradient
++ Bounded Variance
+$$
+\mathrm{Var}(g(\mathbf{w}; \xi)) \leq \frac{\sigma^2}{b}
+$$
+$$
+\mathbb{E}_{\xi}[\|g(\mathbf{w}; \xi)\|^2] \leq \|\nabla F(\mathbf{w})\|^2 + \frac{\sigma^2}{b}
+$$
++ Bounded Objective
+$$
+F(\mathbf{w}) \ge F_{inf}, \forall \mathbf{w}
+$$
+
+For a $L$-smooth function, if $\eta L+\eta^2L^2\tau(\tau-1) \leq 1$, after $t$ iterations, we have
+
+$$
+\mathbb{E}\left[\frac{1}{t} \sum_{k=1}^{t} \|\nabla F(\mathbf{w}_k)\|^2\right] \leq \frac{2(F(\mathbf{w}_0) - F_{inf})}{\eta t} + \frac{\eta L\sigma^2}{mb} + \frac{\eta^2 L^2 \sigma^2 (\tau - 1)}{b}
+$$
+
+We are not assuming strong convexity above — that is why the left hand side is the average of gradients rather than the optimality gap.
+
+For non-convex functions we can only show convergence towards $F_{inf}$ of the objective function rather than the true optimum $F^*$.
+
+The model converges to a stationary point but not (necessarily) a global minimum.
+
 ## Lecture 20-22: Clustering
+
+### K-Means:
+
+$$
+J = \sum_{n=1}^N \sum_{k=1}^K r_{nk} \|\mathbf{x}_n - \boldsymbol{\mu}_k\|_2^2
+$$
+
++ Initialize: Pick $k$ random points as cluster centers, $\mu_1,\dots,\mu_k$
++ Alternate:
+    + Assign data points to closest cluster center in $\mu_1,\dots,\mu_k$
+        + $r_{nk} = 1$ if $k = \arg\min_j \|\mathbf{x}_n - \boldsymbol{\mu}_j\|_2^2$, else $r_{nk} = 0$
+    + Change each cluster center to the average of its assigned points
+        + $\boldsymbol{\mu}_k = \frac{\sum_{n=1}^N r_{nk} \mathbf{x}_n}{\sum_{n=1}^N r_{nk}}$
++ Stop: When the clusters are stable
+
+### Gaussian Mixture Models (GMM):
+
+Model each region (cluster) with a distinct distribution
+
+Density function:
+
+$$
+p(\mathbf{x}) = \sum_{k=1}^K \omega_k \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_k, \Sigma_k)
+$$
+
+where
++ $K$ is the number of clusters
++ $\mu_k$ and $\Sigma_k$ are the mean and covariance of the $k$-th Gaussian component
++ $\omega_k$ is the mixture weight (or prior) representing how much each component contributes to final distribution.
+    + $\omega_k \geq 0$ for all $k$ and $\sum_{k=1}^K \omega_k = 1$
+
+Training: Expectation-Maximization (EM) algorithm
+
+Alternate between estimating $r_{nk}$ and computing parameters
++ Initialize $\omega_k$, $\boldsymbol{\mu}_k$, $\Sigma_k$ for $k=1,\dots,K$
++ E-step: Estimate $r_{nk} = p(z_n = k | \mathbf{x}_n)$ using Bayes rule
++ M-step: Update parameters using the current $r_{nk}$ and MLE
+
+GMMs vs. K-Means:
++ K-Means (often called hard GMM) is a simpler, more straightforward method, but might not be as accurate because of deterministic clustering
++ GMMs can be more accurate, as they model more information (soft clustering, variance), but can be more expensive to compute
+
+Applications of EM:
++ EM is a general method to deal with hidden data; we have studied it in  the context of hidden labels (unsupervised learning). Common applications include:
++ Filling in missing data in a sample
++ Discovering the value of latent model variables
++ Estimating parameters of finite mixture models
++ As an alternative to direct maximum likelihood estimation
 
 ## Lecture 23: PCA
 
