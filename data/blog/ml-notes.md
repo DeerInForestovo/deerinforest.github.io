@@ -19,7 +19,41 @@ Notes for CMU-18661 Introduction to Machine Learning for Engineers.
 
 ## Lecture 2: MLE & MAP
 
-Pending...
+### Maximum Likelihood Estimation (MLE)
+
+Goal: Find the parameter $\theta$ that maximizes the likelihood of the observed data $\mathcal{D}$.
+
+$$
+P(\mathcal{D}|\theta) = \prod_{n=1}^N P(x_n|\theta)
+$$
+
+Question: Given this model and the observed data, what is the most likely value of $\theta$?
+
+$$
+\hat{\theta}_{MLE} = \arg\max_{\theta} P(\mathcal{D}|\theta)
+$$
+
+### Bayesian Learning
+
+Question: How to incorporate prior knowledge?
+
+Bayes's Rule:
+
+$$
+P(\theta|\mathcal{D}) = \frac{P(\mathcal{D}|\theta)P(\theta)}{P(\mathcal{D})}
+$$
+
+where $P(\theta)$ is the prior distribution over $\theta$, $P(\mathcal{D}|\theta)$ is the likelihood of the data given $\theta$, and $P(\mathcal{D})$ is the marginal likelihood of the data, which is independent of $\theta$. Therefore,
+
+$$
+P(\theta|\mathcal{D}) \propto P(\mathcal{D}|\theta)P(\theta)
+$$
+
+### Maximum A Posteriori Estimation (MAP)
+
+$$
+\hat{\theta}_{MAP} = \arg\max_{\theta} P(\theta|\mathcal{D}) = \arg\max_{\theta} P(\mathcal{D}|\theta)P(\theta)
+$$
 
 ## Lecture 3-4: Linear Regression
 
@@ -92,7 +126,7 @@ RSS(\widetilde{\mathbf{w}}) &= \sum_{n=1}^N (y_n - \widetilde{\mathbf{w}}^{\top}
 \end{aligned}
 $$
 
-### Why minimize RSS?
+### Probabilistic Interpretation of Linear Regression:
 
 Noisy observation model:
 
@@ -132,13 +166,115 @@ $$
 
 + Estimating $\sigma^{2*}$ tells us how much noise there is in our predictions. For example, it allows us to place confidence intervals around our predictions.
 
-### Gradient Descent Method:
+### Gradient Descent Method
 
-pending...
+$$
+\text{Least Mean Squares solution}\quad\widetilde{\mathbf{w}}^{\text{LMS}} = \left(\widetilde{\mathbf{X}}^{\top}\widetilde{\mathbf{X}}\right)^{-1} \left(\widetilde{\mathbf{X}}^{\top}y\right)
+$$
+
+Directly solving this costs $O(ND^2+D^3)$ time, where $D$ is the number of features and $N$ is the number of training examples:
++ $O(ND^2)$ for $X^\top X$
++ $O(D^3)$ for matrix inversion
++ $O(ND)$ for $X^\top y$
++ $O(D^2)$ for matrix multiplication
+
+(Batch) Gradient Descent:
+
+$$
+\mathbf{w}^{(t+1)} = \mathbf{w}^{(t)} - \eta \nabla RSS(\mathbf{w}^{(t)})
+$$
+
+Complexity: $O(ND)$ per iteration
+
+Stochastic Gradient Descent (SGD):
+
+Instead of computing the gradient over the entire dataset, we can compute the gradient using a single training example (or a mini-batch of training examples)
+
+Complexity: $O(D)$ per iteration
+
+### Feature Scaling:
+
+To avoid too large/small feature values, we can scale the features:
++ Min-Max Scaling: $x' = \frac{x - \min(x)}{\max(x) - \min(x)}\quad x'\in [0,1]$
++ Mean normalization: $x' = \frac{x - \bar{x}}{\max(x) - \min(x)} \quad x'\in [-1,1]$
+
+### Ridge Regression:
+
+Problem: $X^{\top}X$ may be non-invertible when $D > N$ or when there are redundant features.
+
+Solution: Add a regularization term to the loss function:
+
+$$
+\mathbf{w} = (X^\top X + \lambda I)^{-1} X^\top y
+$$
+
+This is equivalent to adding an extra term to $RSS(\mathbf{w})$:
+
+$$
+\text{Ridge Loss}(\mathbf{w}) = RSS(\mathbf{w}) + \frac12 \lambda \|\mathbf{w}\|_2^2
+$$
+
+because
+
+$$
+\nabla_{\mathbf{w}} \text{Ridge Loss} = 2 X^\top X \mathbf{w} - 2 X^\top y + \lambda \mathbf{w} = 0 \leftrightarrow (X^\top X + \lambda I) \mathbf{w} = X^\top y
+$$
+
+### Probabilistic Interpretation of Ridge Regression:
+
+Idea: Place a prior on our weights
++ $Y \sim \mathcal{N}(\mathbf{w}^\top X, \sigma_0^2)$ is a Gaussian random variable (as before)
++ $\mathbf{w}_d \sim \mathcal{N}(0, \sigma^2)$ are i.i.d. Gaussian random variables (**unlike before**)
++ Note that all $\mathbf{w}_d$ share the same variance $\sigma^2$
++ To find $\mathbf{w}$ given data $\mathcal{D}$, compute the posterior distribution of $\mathbf{w}$:
+$$
+p(\mathbf{w}|\mathcal{D}) = \frac{p(\mathcal{D}|\mathbf{w})p(\mathbf{w})}{p(\mathcal{D})} \propto p(\mathcal{D}|\mathbf{w})p(\mathbf{w})
+$$
+
+Maximum a posterior (MAP) estimate:
+
+$$
+\mathbf{w}^{MAP} = \arg\max_{\mathbf{w}} p(\mathbf{w}|\mathcal{D}) = \arg\max_{\mathbf{w}} p(\mathcal{D}|\mathbf{w})p(\mathbf{w})
+$$
+
+$$
+\begin{aligned}
+\log p(\mathcal{D}|\mathbf{w}) &= \sum_n \log p(y_n|\mathbf{x_n},\mathbf{w}) + \sum_d \log p(w_d) \\
+&=-\frac{\sum_n(y_n - \mathbf{x_n}^\top \mathbf{w})^2}{2\sigma_0^2} - \sum_d \frac{1}{2\sigma^2} w_d^2 + \text{const}\\
+\mathbf{w}^{MAP} &= \arg\max_{\mathbf{w}} \log p(\mathcal{D}|\mathbf{w})\\
+&=\arg\min_{\mathbf{w}} \sum_n (y_n - \mathbf{x_n}^\top \mathbf{w})^2 + \frac{\sigma_0^2}{\sigma^2}||\mathbf{w}||_2^2
+\end{aligned}
+$$
+
+Define $\lambda = \frac{\sigma_0^2}{\sigma^2}$, the form is the same as the ridge regression loss function.
+
+With $\lambda\rightarrow 0$, we trust our data more, and $\mathbf{w}^{MAP}\rightarrow \mathbf{w}^{LMS}$.
+
+In contrast, with $\lambda \rightarrow \infty$, the variance of noise is far greater than what our prior model can allow for $\mathbf{w}$. In this case, our prior model on $\mathbf{w}$ will force $\mathbf{w}$ to be close to zero. Numerically, $\mathbf{w}^{MAP} \rightarrow 0$.
 
 ## Lecture 5: Overfitting
 
-Pending...
+As a model increases in complexity:
++ Training error keeps reducing
++ Validation error may first reduce but eventually increase
+
+### Deal with overfitting:
++ Use more training data
++ Reduce the number of features
++ Add a regularization term
+    + Force the model to be simpler
+    + E.g. Linear regression to ridge regression
+
+### Cross-validation:
++ Split the training data into $k$ folds
++ Train on $k-1$ folds and validate on the remaining fold
++ Repeat for each fold and average the results
+
+### Bias-Variance Trade-off:
+
+High Bias: Model is not rich enough to fit the training dataset and achieve low training loss
+
+High Variance: If the training dataset changes slightly, the model changes a lot
 
 ## Lecture 6: Naive Bayes
 
@@ -266,10 +402,6 @@ $$
 $$
 
 where $\left(g(\mathbf{x}_n) - y_n\right)$ is the training error for the $n$th training example.
-
-Training:
-
-pending... (page 31)
 
 ### Non-linear Decision Boundary:
 
@@ -419,7 +551,7 @@ Features:
 + Independent of the size d of x: **SVM scales better for high-dimensional features.**
 + May seem like a lot of optimization variables when N is large, but many of the $\alpha_n$ become zero. $\alpha_n$ is non-zero only if the nth point is a support vector. **SVM only depends on a subset of the training points (support vectors).**
 
-$\alpha_n<C$ only when $\xi_n=0$, pending... (page 62)
+$\alpha_n<C$ only when $\xi_n=0$
 
 Learning:
 
@@ -480,8 +612,6 @@ Two crucial choices for NN
 + Choosing the right distance measure: Euclidean distance, $L_1$ or $L_p$ distance, feature scaling, ...
 + In practice, these are hyper parameters that need to be tuned by a validation dataset or cross validation.
 + When $K$ increases, the decision boundary becomes smoother and less susceptible to outliers (i.e. lower variance).
-
-pending...
 
 ## Lecture 12: Decision Trees
 
@@ -564,9 +694,47 @@ $$w_{t+1}(n) \propto w_t(n) e^{-\beta_t y_n h_t(x_n)}$$
 
 $$H(x) = \text{sign}\left(\sum_{t=1}^T \beta_t h_t(x)\right)$$
 
-Why this works? pending...
-
 ## Lecture 15-17: Neural Networks
+
+### Binary Logistic Regression:
+
+Binary Logistic Regression serves as the simplest form of a neural network (a single neuron).
+
++ Model: $\sigma(\mathbf{w}^\top\mathbf{x} + b) = \frac{1}{1 + e^{-(\mathbf{w}^\top\mathbf{x} + b)}}$
++ A single-layer perceptron (Linear Classifier) cannot solve the XOR problem because the data is not linearly separable.
+
+### Multi-Layer Neural Networks (MLP):
+
+A Multi-Layer Perceptron (MLP) consists of an input layer, one or more hidden layers, and an output layer.
++ Structure: Inputs are transformed via weights and biases, passed through non-linear activation functions, and propagated forward.
++ Purpose: To approximate complex, non-linear functions that a single neuron cannot capture.
+
+### Activation Functions:
+
+Activation functions introduce non-linearity, allowing the network to learn complex patterns.
+
+| Layer Type | Role | Typical Activations |
+| --- | --- | --- |
+| Input Layer | Initial feature transformation. | Linear, Sigmoid, Tanh |
+| Hidden Layer | Converts inputs into "classification features." | Highly problem dependent! (ReLU, Leaky ReLU) |
+| Output Layer | Produces the final classification decision. | Softmax (Multi-class), Sigmoid (Binary) |
+
+#### Common Activation Functions
+
++ Sigmoid / Tanh: Traditional choices, but prone to the vanishing gradients problem
+    + Gradients become near-zero for large/small inputs, halting learning
++ Hard Sigmoid / Hard Tanh: Computationally cheaper linear approximations of their smooth counterparts.
++ Rectified Linear Units (ReLU): $f(z) = \max(0, z)$. Solves vanishing gradients for positive inputs and promotes sparsity.
++ Generalized ReLU: Includes variants like Leaky ReLU ($f(z) = \max(\alpha z, z)$) or PReLU, which prevent "dead neurons" by allowing a small gradient when $z < 0$.
+
+| Function | Output Range | Use Case |
+| --- | --- | --- |
+| Softmax | $(0, 1)$, sum to $1$ | Multi-class probability distribution. |
+| Sigmoid | $(0, 1)$ | Binary classification probability. |
+| Tanh | $(-1, 1)$ | Zero-centered outputs, often for internal representations. |
+| ReLU | $[0, \infty)$ | Regression or hidden layer feature extraction. |
+
+---
 
 
 
