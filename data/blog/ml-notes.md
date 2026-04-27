@@ -942,7 +942,212 @@ Applications of EM:
 
 ## Lecture 23: PCA
 
+### Principal Component Analysis (PCA):
+
+Goal: Find a better representation of data
+
+PCA Formulation:
++ $\mathbf{X}$ is the raw data of $n\times d$.
++ $\mathbf{P}$ is the projection matrix of $d\times k$.
++ $\mathbf{Z} = \mathbf{X}\mathbf{P}$ is the reduced representation of $n\times k$.
+
++ Zero-center the data: $\mathbf{x}_i \leftarrow \mathbf{x}_i - \frac{1}{n} \sum_{i=1}^n \mathbf{x}_i$
++ Compute the covariance matrix: $\mathbf{C}_\mathbf{X} = \frac{1}{n} \mathbf{X}^T \mathbf{X}$
+
+$$
+\begin{aligned}
+\mathbf{C}_{\mathbf{Z}} &= \frac{1}{n} \mathbf{Z}^T \mathbf{Z}\\
+&= \frac{1}{n} (\mathbf{X}\mathbf{P})^T (\mathbf{X}\mathbf{P})\\
+&= \frac{1}{n} \mathbf{P}^T \mathbf{X}^T \mathbf{X} \mathbf{P}\\
+&= \mathbf{P}^T \mathbf{C}_{\mathbf{X}} \mathbf{P}
+\end{aligned}
+$$
+
+Goal: We want P to be the k directions with the largest variance, i.e. the $C_{Z}$ should be the "largest": Eigenvalue Decomposition.
+
+$$
+\mathbf{C}_{\mathbf{X}} = \mathbf{Q} \mathbf{\Lambda} \mathbf{Q}^T
+$$
+
+where
++ $\Lambda=\text{diag}(\lambda_1, \lambda_2, \ldots, \lambda_d)$ is a diagonal matrix with eigenvalues $\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_d$ on the diagonal.
++ $Q = [\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_d]$ is an orthogonal matrix whose columns are the corresponding eigenvectors $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_d$.
+
+How to choose $k$?
++ For visualization: $k=2$ or $k=3$.
++ For dimensionality reduction: choose $k$ such that $\frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^d \lambda_i} \geq 0.95$ (i.e., we want to retain at least 95 percent of the variance).
+
+### Independent Component Analysis (ICA):
+
+Goal: Find a better representation of data by maximizing the statistical independence of the components.
+
+Example (Cocktail Party Problem): We have $n$ people talking in a room, and we have $m$ microphones that record the mixed signals. We want to recover the original signals of each person.
+
+ICA Formulation:
++ $\mathbf{X}$ is the observed data of $d\times n$ (each column is a data point).
++ $\mathbf{S}$ is the hidden source signals of $d\times n$ (each column is a data point).
++ $\mathbf{A}$ is the mixing matrix of $d\times d$.
+
+$$
+\mathbf{X} = \mathbf{A} \mathbf{S}
+$$
+
+Goal: We want to find a matrix $\mathbf{W}$ such that $\mathbf{Y} = \mathbf{W} \mathbf{X} \approx \mathbf{S}$.
+
+Applications:
++ Image denoising
++ Face recognition
++ Feature extraction
++ Clustering, classification, DNN
++ Timeseries applications (e.g. cocktail party problem)
+
 ## Lecture 24: Online Learning & Multiple Arm Bandits
 
+### Online Learning:
+
+Online learning occurs when we do not have access to our entire training dataset when we start training
+
+Issue: No full feedback.
++ E.g. Online advertising: we only know the appeal of the ad shown. We have no idea if we were right about the appeal of other ads.
++ We can only observe the loss.
+
+Objective: Minimize Regret
+
+$$
+R(T) = \sum_{t=1}^T [l(x_t, y_t, \beta_t) - l(x_t, y_t, \beta^*)]
+$$
+
+### Multiple Arm Bandits:
+
+We have $K$ arms, each with an unknown reward distribution. We want to maximize our total reward over $T$ rounds.
+
+High level idea: We want to balance exploration and exploitation
++ Exploration: We want to try out different arms to learn about their reward distributions.
++ Exploitation: We want to pull the arm that we currently believe has the highest reward.
+
+Regret:
+
+$$
+R(T) = T \rho^* - \mathbb{E}\left[\sum_{t=1}^T r(i_t)\right]
+$$
+
+(explanation: $T$ times highest expected reward minus the actual reward we get)
+
+### Epsilon-Greedy Algorithm:
+
+The idea is to exploit the best arm, but explore a random arm $\epsilon$ fraction of the time.
+
+Empirical average reward of arm $i$: $r(i)=$ Total reward from arm $i$ in the past $/$ Number of times arm $i$ was pulled in the past.
+
+With probability $1-\epsilon$, pull the arm with the highest empirical average reward (exploitation). With probability $\epsilon$, pull a random arm (exploration).
+
+### Upper Confidence Bound (UCB1) Algorithm:
+
+The idea is to always pull the "best" arm, where "best" includes exploitation and exploration.
+
+$$
+UCB_i= r(i) + \sqrt{\frac{2 \log T}{T_i}}
+$$
+
+where $r(i)$ is the empirical average reward of arm $i$, $T$ is the total number of rounds, and $T_i$ is the number of times arm $i$ has been pulled.
+
+### Thompson Sampling:
+
++ Define a prior $p_i\sim \text{Beta}(\alpha_i, \beta_i)$ for each arm $i$.
++ For each arm $i$, sample $p_i$ from the prior distribution.
++ Pull the arm with the highest expected reward $\tilde p_i=\mathbb{E}[r_i|p_i]$.
++ Update $\text{Beta}(\alpha_i, \beta_i)$ based on the reward received.
+    + $\alpha_i \leftarrow \alpha_i + r(i)$
+    + $\beta_i \leftarrow \beta_i + (1 - r(i))$
+
 ## Lecture 25-26: Reinforcement Learning
+
+### Reinforcement Learning:
+
+In Reinforcement Learning, an agent interacts with an environment in discrete time steps.
++ Action: $a_t$ is the action taken by the agent at time $t$.
++ State: $s_t$ is the state of the environment at time $t$.
++ Reward: $r_t$ is the reward received by the agent at time $t$.
++ After the agent takes action $a_t$ in state $s_t$, the environment transitions to a new state $s_{t+1}$ and the agent receives a reward $r_t$ and also observes the new state $s_{t+1}$.
+
+Objective:
+
+$$
+R(T)=\sum_{t=0}^T\mathbb{E}[r(a(t), s(t))]
+$$
+
+$$
+R(\infty) = \sum_{t=0}^\infty \gamma^t \mathbb{E}[r(a(t), s(t))]
+$$
+
+where $\gamma \in [0, 1)$ is the discount factor that determines the importance of future rewards.
+
+A policy $\pi$ is a mapping from states to actions, given the current state, tells the agent which action to take.
++ Deterministic policy: $\pi(s) = a$
++ Stochastic policy: $\pi(a|s) = P(a|s)$
+
+Markov property: The state evolution is memoryless (depends only on the values of the current state).
+
+### Bellman Equations:
+
+$$
+\begin{aligned}
+V(s) &= \mathbb{E}[\sum_{t=0}^\infty \gamma^t r_t | s_0 = s]\\
+&= \mathbb{E}[r(s)] + \gamma \mathbb{E}_{s'\sim P(s_1|s_0=s)}[V(s')]
+\end{aligned}
+$$
+
+Matrix form:
+
+$$
+\begin{aligned}
+V &= r + \gamma P V\\
+&= (I - \gamma P)^{-1} r
+\end{aligned}
+$$
+
+Bellman Equations for MDP:
+
+$$
+\begin{aligned}
+V_\pi(s) &= \sum_{a\in \mathcal{A}} \pi(a|s) Q_\pi(a, s)\\
+Q_\pi(a, s) &= \mathbb{E}[r(s, a)] + \gamma \sum_{s'\in \mathcal{S}} P(s'|s, a) V_\pi(s')\\
+\implies V_\pi(s) &= \mathbf{E}[r(s)] + \gamma \sum_{a\in \mathcal{A}} \pi(a|s) \sum_{s'\in \mathcal{S}} P(s'|s, a) V_\pi(s')
+\end{aligned}
+$$
+
++ From $V$ to $Q$: The total value for state $s$ is the expected value of the action values $Q_\pi(a, s)$ weighted by the policy $\pi(a|s)$.
++ From $Q$ to $V$: The action value $Q_\pi(a, s)$ is the expected reward for taking action $a$ in state $s$ plus the discounted expected value of the next state $s'$.
+
+### Updating the Value Function:
+
+Value Iteration:
+
+$$
+\begin{aligned}
+Q(a, s) &\leftarrow \mathbb{E}[r(s, a)] + \gamma \sum_{s'\in \mathcal{S}} P(s'|s, a) \max_{a'} Q(a', s')\\
+V(s) &\leftarrow \max_{a} Q(a, s)
+\end{aligned}
+$$
+
+Policy Iteration:
+
+$$
+\begin{aligned}
+\text{Policy Evaluation: } & V(s) \leftarrow \sum_{a\in \mathcal{A}} \pi(a|s) \left( \mathbb{E}[r(s, a)] + \gamma \sum_{s'\in \mathcal{S}} P(s'|s, a) V(s') \right)\\
+\text{Policy Improvement: } & \pi(a|s) \leftarrow \arg\max_{a'} \left( \mathbb{E}[r(s, a')] + \gamma \sum_{s'\in \mathcal{S}} P(s'|s, a') V(s') \right)
+\end{aligned}
+$$
+
+Q-Learning:
+
++ Problem: In real-world applications, we often do not have access to the transition probabilities $P(s'|s, a)$, therefore knowing $V(s)$ does not help us to compute $Q(a, s)$.
++ Solution: We can directly learn $Q(a, s)$.
+    + Initialize $Q(a, s)$ arbitrarily (e.g., $Q(a, s) = 0$ for all $a, s$).
+    + For each step, we take an action $a$ ($\epsilon$-greedy), and observe the reward $r$ and the new state $s'$.
+    + Update $Q(a, s)$ using the observed reward and the maximum $Q$ value of the new state $s'$, assume the future actions are all optimal:
+
+$$
+Q(a, s) \leftarrow (1-\alpha) Q(a, s) + \alpha \left( r(s, a) + \gamma \max_{a'} Q(a', s') \right)
+$$
 
