@@ -963,7 +963,7 @@ $$
 \end{aligned}
 $$
 
-Goal: We want P to be the k directions with the largest variance, i.e. the $C_{Z}$ should be the "largest": Eigenvalue Decomposition.
+Goal: We want $P$ to be the $k$ directions with the largest variance, i.e. the $C_{Z}$ should be the "largest": Eigenvalue Decomposition.
 
 $$
 \mathbf{C}_{\mathbf{X}} = \mathbf{Q} \mathbf{\Lambda} \mathbf{Q}^T
