@@ -1088,9 +1088,10 @@ Loop Join
 Sort-Merge Join
 
 + Sort, Cost: $2M\cdot(1+\lceil\log_{B-1}(\lceil\frac{M}{B}\rceil)\rceil)+2N\cdot(1+\lceil\log_{B-1}(\lceil\frac{N}{B}\rceil)\rceil)$.
-+ Merge, Cost: $M+N$.
-    + The worst case for the merging phase is when the join attribute of all the tuples in both relations contains the same value.
-    + Cost: $MN+$sort.
++ Merge
+    + Cost of normal case: $M+N$.
+    + Cost of worst case (the join attribute of all the tuples in both relations contains the same value): $M\times N$.
++ Total cost: $\text{Merge} + \text{sort}$.
 
 Hash Join
 
@@ -1385,13 +1386,13 @@ Interleaved Execution Anomalies:
 + Write-Skew (Read-Write) (Lecture 20)
 
 Unrepeatable Read:
-+ T1.R, T2.W, T1.R $rightarrow$ T1 reads different values for the same data item.
++ T1.R, T2.W, T1.R $\rightarrow$ T1 reads different values for the same data item.
 
 Dirty Read:
-+ T1.W, T2.R, T1.ABORT $rightarrow$ T2 reads uncommitted changes made by T1.
++ T1.W, T2.R, T1.ABORT $\rightarrow$ T2 reads uncommitted changes made by T1.
 
 Lost Update:
-+ T1.W(A), T2.W(A), T2.W(B), T2.COMMIT, T1.COMMIT $rightarrow$ T1's update to A is lost (T2 overwrites T1's uncommitted data).
++ T1.W(A), T2.W(A), T2.W(B), T2.COMMIT, T1.COMMIT $\rightarrow$ T1's update to A is lost (T2 overwrites T1's uncommitted data).
 
 Conflict Serializability: 
 + Two schedules are conflict equivalent iff:
@@ -1427,8 +1428,9 @@ If commits, always exists. Also logging/shadow-paging.
 ### Two-Phase Locking (2PL)
 
 Phase 1: Growing
-+ Each txn requests the locks that it needs from the DBMS’s lock manager.
++ Each txn requests the locks that it needs from the DBMS's lock manager.
 + The lock manager grants/denies lock requests.
+
 Phase 2: Shrinking
 + The txn is allowed to only release/downgrade locks that it previously acquired. It cannot acquire new locks.
 
@@ -1441,7 +1443,7 @@ Phase 2: Shrinking
 ### 2PL Problems: Cascade Aborts
 
 |T1|T2|Discussion|
-|-|-| |
+|-|-|-|
 |BEGIN| | |
 |X-Lock(A)| | |
 |X-Lock(B)| | |
@@ -1595,8 +1597,7 @@ OCC Phases
         + Hint: Our goal here is to promise the serializability of the schedule. Therefore,
             + if $T_1$ **writes** first, then $T_1$ do not need to worry about whether its WriteSet intersects with the WriteSet of $T_2$;
             + however, if $T_2$ **write** first (i.e. $T_1$'s Write Phase and $T_2$'s Write Phase overlaps), then $T_1$ needs to make sure that it's WriteSet does not intersect with the WriteSet of $T_2$, otherwise $T_1$ and $T_2$ are not serializable.
-    + Backward validation: Check whether the committing txn intersects its read/write sets with those of any txns that have already committed.
-        + If $T_1$ is committing, and $T_2$ has already committed ($T_2<T_1$), then $T_1$ can commit only if $T_1$ does not read any object modified by $T_2$ (i.e. $ReadSet(T_1)\cap WriteSet(T_2)=\emptyset$)
+    + Backward validation: The DBMS checks the timestamp ordering of the committing transaction with the Read/Write sets of transactions that have already committed since the current transaction started, using the same three conditions as above.
 
 | |Forward Validation|Backward Validation|
 |-|-|-|
@@ -1638,12 +1639,18 @@ Solutions to the Phantom Problem:
 
 ### Isolation Levels
 
+Anomalies:
++ Dirty Read: read uncommitted data.
++ Unrepeatable Read: redoing a read may return different results.
++ Lost Update: concurrent updates may overwrite each other.
++ Phantom Read: insertion/deletion cause different result for a scan.
+
 Isolation levels, high to low:
 
-Serializable (SS2PL + phantom protection): No phantoms, all reads repeatable, no dirty reads.
-Repeatable Read (SS2PL): Phantoms may happen.
-Read Committed (SS2PL, but S locks are released immediately): Phantoms, unrepeatable reads, and lost updates may happen.
-Read Uncommitted (SS2PL, no S locks): All anomalies may happen.
++ Serializable (SS2PL + phantom protection): No phantoms, all reads repeatable, no dirty reads.
++ Repeatable Read (SS2PL): Phantoms may happen.
++ Read Committed (SS2PL, but S locks are released immediately): Phantoms, unrepeatable reads, and lost updates may happen.
++ Read Uncommitted (SS2PL, no S locks): All anomalies may happen.
 
 ## Lecture 20-21: Multi-Versioning Concurrency Control (MVCC)
 
@@ -1805,6 +1812,8 @@ Automatically propagate changes to external sources to replicate and synchronize
 
 ### Checkpoints
 
+Blocking implementation:
+
 + Pause all queries.
 + Flush all WAL records in memory to disk.
 + Flush all modified pages in buffer pool to disk.
@@ -1839,7 +1848,7 @@ Each data page contains a pageLSN.
 System keeps track of flushedLSN.
 + The max LSN flushed so far.
 
-**WAL: Before a pagex is written, pageLSNx ** $\le$ ** flushedLSN**
+**WAL: Before a pagex is written, pageLSNx $\le$ flushedLSN**
 + Otherwise, the page may contain changes that have not been logged yet.
 
 Log Sequence Numbers:
@@ -1848,9 +1857,9 @@ Log Sequence Numbers:
 | Name | Location | Definition |
 |-|-|-|
 | flushedLSN | Memory | Last LSN in log on disk |
-| pageLSN | page$_x$ | Newest update to page$_x$ |
-| recLSN | Dirty Page Table | Oldest update to page$_x$ since it was last flushed |
-| lastLSN | Active Transaction Table | Latest record of txn T$_i$ |
+| pageLSN | $\text{page}_x$ | Newest update to $\text{page}_x$ |
+| recLSN | Dirty Page Table | Oldest update to $\text{page}_x$ since it was last flushed |
+| lastLSN | Active Transaction Table | Latest record of txn $T_i$ |
 | MasterRecord | Disk | LSN of latest checkpoint |
 
 
