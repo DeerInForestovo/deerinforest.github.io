@@ -1931,3 +1931,4 @@ Aries: Recovery Phases
 
 ## Lecture 24-25: Distributed Database
 
+...

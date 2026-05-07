@@ -360,6 +360,7 @@ TMA：Tensor Memory Access，用于高效搬运数据，通过异步 + pipeline 
 
 哔哩哔哩 AI 开发，CPP 开发
 + 3.28 投
++ 5.7 HR call（这也太晚了）
 
 字节 AI-infra，CPP 数据库
 + 3.28 投
@@ -377,6 +378,7 @@ TMA：Tensor Memory Access，用于高效搬运数据，通过异步 + pipeline 
 
 华为 AI-infra
 + 4.3 投（好像晚了，不过也不太敢去）
++ 后续约笔试，未参加
 
 Kimi Engineering Product
 + 4.3 投
